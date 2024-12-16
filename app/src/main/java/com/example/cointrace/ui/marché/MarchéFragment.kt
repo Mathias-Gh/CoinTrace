@@ -1,4 +1,4 @@
-package com.example.cointrace.ui.home
+package com.example.cointrace.ui.marche
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.example.cointrace.databinding.FragmentHomeBinding
+import com.example.cointrace.databinding.FragmentMarcheBinding
 
-class HomeFragment : Fragment() {
+class MarchéFragment : Fragment() {
 
-    private var _binding: FragmentHomeBinding? = null
+    private var _binding: FragmentMarcheBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class HomeFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val homeViewModel =
-            ViewModelProvider(this).get(HomeViewModel::class.java)
+        val marchéViewModel =
+            ViewModelProvider(this)[MarchéViewModel::class.java]
 
-        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        _binding = FragmentMarcheBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textHome
-        homeViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textMarch
+        marchéViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

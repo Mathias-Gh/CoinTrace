@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">CoinTrace</string>
-    <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
+    <string name="title_marché">Marché</string>
+    <string name="title_simulation">Simulation</string>
+    <string name="title_note">Note</string>
+    <string name="title_compte">Compte</string>
 </resources>
