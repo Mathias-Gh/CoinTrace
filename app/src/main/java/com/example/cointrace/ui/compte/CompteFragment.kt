@@ -33,7 +33,8 @@ class CompteFragment : Fragment() {
             if (username == "user" && password == "1234") {
                 Toast.makeText(requireContext(), "Connexion réussie !", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Échec de la connexion !", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Échec de la connexion !", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
 
@@ -46,7 +47,11 @@ class CompteFragment : Fragment() {
             if (pseudo.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
                 Toast.makeText(requireContext(), "Inscription réussie !", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(requireContext(), "Veuillez remplir tous les champs", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireContext(),
+                    "Veuillez remplir tous les champs",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -68,3 +73,4 @@ class CompteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
+}
