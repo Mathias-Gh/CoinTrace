@@ -68,4 +68,3 @@ class CompteFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-}
