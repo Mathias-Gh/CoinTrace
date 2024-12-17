@@ -4,4 +4,18 @@
     <string name="title_simulation">Simulation</string>
     <string name="title_note">Note</string>
     <string name="title_compte">Compte</string>
+    <string-array name="spinner_crypto_options">
+        <item>Bitcoin (BTC)</item>
+        <item>Ethereum (ETH)</item>
+        <item>Solana (SOL)</item>
+        <item>BNB (BNB)</item>
+        <item>Cardano (ADA)</item>
+    </string-array>
+    <string-array name="spinner_frequency_options">
+        <item>Par jour</item>
+        <item>Par semaine</item>
+        <item>Par mois</item>
+        <item>Par an</item>
+    </string-array>
 </resources>
+
