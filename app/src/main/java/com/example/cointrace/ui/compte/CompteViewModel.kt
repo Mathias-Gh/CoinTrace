@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 class CompteViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+        value = "Login"
     }
     val text: LiveData<String> = _text
 }
