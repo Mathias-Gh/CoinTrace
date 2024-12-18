@@ -47,20 +47,6 @@ class CompteFragment : Fragment() {
             showLoginScreen()
         }
 
-        binding.loginButton.setOnClickListener {
-            val username = binding.username.text.toString()
-            val password = binding.password.text.toString()
-
-            if (username == "user" && password == "1234") {
-                Toast.makeText(requireContext(), "Connexion réussie !", Toast.LENGTH_SHORT).show()
-                compteViewModel.isLoggedIn = true
-                compteViewModel.currentUsername = username
-                showAccountScreen()
-            } else {
-                Toast.makeText(requireContext(), "Échec de la connexion !", Toast.LENGTH_SHORT).show()
-            }
-        }
-
         binding.registerButton.setOnClickListener {
             val pseudo = binding.pseudo.text.toString()
             val email = binding.email.text.toString()
