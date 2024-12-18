@@ -39,7 +39,9 @@ android {
 }
 
 dependencies {
-
+    implementation(libs.retrofit.gson)
+    implementation("com.squareup.retrofit2:retrofit:${libs.versions.retrofit.get()}")
+    implementation("androidx.recyclerview:recyclerview:${libs.versions.androidx.recyclerview.get()}")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.material)
