@@ -25,7 +25,7 @@ class CryptoAdapter(private val cryptoList: List<CryptoCurrency>) :
     override fun onBindViewHolder(holder: CryptoViewHolder, position: Int) {
         val crypto = cryptoList[position]
         holder.nameTextView.text = crypto.name
-        holder.priceTextView.text = "$${crypto.current_price}"
+        holder.priceTextView.text = "${crypto.current_price}€"
     }
 
     override fun getItemCount(): Int {
