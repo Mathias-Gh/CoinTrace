@@ -6,6 +6,8 @@ import androidx.lifecycle.ViewModel
 
 class CompteViewModel : ViewModel() {
 
+    var isLoggedIn: Boolean = false
+    var currentUsername: String? = null
     private val _text = MutableLiveData<String>().apply {
         value = "Login"
     }
