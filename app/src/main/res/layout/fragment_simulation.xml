@@ -25,7 +25,7 @@
             android:id="@+id/montant_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Montant"
+            android:hint="Montant (en €) "
             android:inputType="number"
             android:minHeight="48dp" />
 

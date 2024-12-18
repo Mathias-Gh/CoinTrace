@@ -40,7 +40,7 @@ class MarchéFragment : Fragment() {
     }
 
     private fun fetchCryptoData() {
-        val call = RetrofitInstance.api.getCryptoData(currency = "usd", perPage = 10)
+        val call = RetrofitInstance.api.getCryptoData(currency = "eur", perPage = 10)
 
         call.enqueue(object : Callback<List<CryptoCurrency>> {
             override fun onResponse(
@@ -50,10 +50,17 @@ class MarchéFragment : Fragment() {
                 if (response.isSuccessful) {
                     val cryptoList = response.body()
                     if (cryptoList != null && cryptoList.isNotEmpty()) {
-                        cryptoAdapter = CryptoAdapter(cryptoList)
-                        cryptoRecyclerView.adapter = cryptoAdapter
-                        // Log pour confirmer les données
-                        Log.d("API_RESPONSE", "Données reçues : $cryptoList")
+                        val filteredList = cryptoList.filter { crypto ->
+                            !listOf("Lido Staked Ether", "").contains(crypto.name)
+                        }
+                        if (filteredList.isNotEmpty()) {
+                            cryptoAdapter = CryptoAdapter(filteredList)
+                            cryptoRecyclerView.adapter = cryptoAdapter
+                            Log.d("API_RESPONSE", "Données filtrées : $filteredList")
+                        } else {
+                            Log.e("API_RESPONSE", "Aucune crypto disponible après filtrage")
+                            Toast.makeText(context, "Aucune crypto disponible", Toast.LENGTH_SHORT).show()
+                        }
                     } else {
                         Log.e("API_RESPONSE", "Liste vide ou nulle")
                     }

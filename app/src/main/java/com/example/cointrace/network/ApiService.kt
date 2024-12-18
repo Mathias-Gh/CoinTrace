@@ -8,9 +8,9 @@ import retrofit2.http.Query
 interface ApiService {
     @GET("coins/markets")
     fun getCryptoData(
-        @Query("vs_currency") currency: String = "usd",
+        @Query("vs_currency") currency: String = "eur",
         @Query("order") order: String = "market_cap_desc",
-        @Query("per_page") perPage: Int = 10,
+        @Query("per_page") perPage: Int = 11,
         @Query("page") page: Int = 1,
         @Query("sparkline") sparkline: Boolean = false
     ): Call<List<CryptoCurrency>>
