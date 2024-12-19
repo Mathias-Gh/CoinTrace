@@ -56,6 +56,7 @@ class CompteFragment : Fragment() {
                 val dbHelper = DatabaseHelper(requireContext())
                 val result = dbHelper.insertUser(email, password, pseudo)
 
+
                 if (result != -1L) {
                     Toast.makeText(requireContext(), "Inscription réussie !", Toast.LENGTH_SHORT).show()
                     compteViewModel.isLoggedIn = true
@@ -69,8 +70,7 @@ class CompteFragment : Fragment() {
             }
         }
 
-
-
+// Bonjour blabla ooooooooooo
 
         binding.loginButton.setOnClickListener {
             val email = binding.username.text.toString()
