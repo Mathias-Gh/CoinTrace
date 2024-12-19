@@ -8,8 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.cointrace.models.CryptoCurrency
 import com.example.cointrace.R
 
-class CryptoAdapter(private val cryptoList: List<CryptoCurrency>) :
-    RecyclerView.Adapter<CryptoAdapter.CryptoViewHolder>() {
+class CryptoAdapter(
+    private val cryptoList: List<CryptoCurrency>,
+    private val onItemClick: (CryptoCurrency) -> Unit
+) : RecyclerView.Adapter<CryptoAdapter.CryptoViewHolder>() {
 
     class CryptoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val nameTextView: TextView = itemView.findViewById(R.id.cryptoName)
@@ -26,9 +28,13 @@ class CryptoAdapter(private val cryptoList: List<CryptoCurrency>) :
         val crypto = cryptoList[position]
         holder.nameTextView.text = crypto.name
         holder.priceTextView.text = "${crypto.current_price}€"
+
+        holder.nameTextView.setOnClickListener {
+            onItemClick(crypto)
+        }
     }
 
-    override fun getItemCount(): Int {
-        return cryptoList.size
+        override fun getItemCount(): Int {
+            return cryptoList.size
+        }
     }
-}
