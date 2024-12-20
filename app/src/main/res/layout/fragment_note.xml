@@ -6,17 +6,63 @@
     android:layout_height="match_parent"
     tools:context=".ui.note.NoteFragment">
 
+    <!-- Titre de la page aligné à gauche -->
     <TextView
-        android:id="@+id/text_note"
-        android:layout_width="match_parent"
+        android:id="@+id/pageTitle"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
+        android:text="Mes Notes"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:textColor="#000000"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- RecyclerView -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/notesRecycler"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:textAlignment="center"
-        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/pageTitle"
+        app:layout_constraintBottom_toTopOf="@id/editTextNote"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Champ de texte pour ajouter une note -->
+    <EditText
+        android:id="@+id/editTextNote"
+        android:layout_width="388dp"
+        android:layout_height="54dp"
+        android:layout_marginBottom="150dp"
+        android:layout_marginTop="15dp"
+        android:ems="10"
+        android:hint="Take a Note..."
+        android:inputType="textMultiLine"
+        android:gravity="start|top"
+        android:scrollbars="vertical"
+        android:lines="5"
+        android:overScrollMode="ifContentScrolls"
+        android:padding="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.478"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/notesRecycler"
+        app:layout_constraintVertical_bias="0.534" />
+
+    <!-- Bouton pour sauvegarder -->
+    <Button
+        android:id="@+id/saveBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.944"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextNote"
+        app:layout_constraintVertical_bias="0.0" />
 </androidx.constraintlayout.widget.ConstraintLayout>
