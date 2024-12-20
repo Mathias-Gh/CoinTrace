@@ -47,11 +47,11 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     //check user
-    fun checkUser(email: String, password: String): Boolean {
+    fun checkUser(pseudo: String, password: String): Boolean {
         val db = readableDatabase
         val cursor = db.rawQuery(
-            "SELECT * FROM $TABLE_USER WHERE $COLUMN_PASSWORD = ?",
-            arrayOf(password)
+            "SELECT * FROM $TABLE_USER WHERE $COLUMN_PASSWORD = ? AND $COLUMN_PSEUDO = ?",
+            arrayOf(password, pseudo)
         )
         val userExists = cursor.count > 0
         cursor.close()
