@@ -40,7 +40,7 @@ class MarchéFragment : Fragment() {
     }
 
     private fun fetchCryptoData() {
-        val call = RetrofitInstance.api.getCryptoData(currency = "eur", perPage = 10)
+        val call = RetrofitInstance.api.getCryptoData(currency = "eur", perPage = 15)
 
         call.enqueue(object : Callback<List<CryptoCurrency>> {
             override fun onResponse(
