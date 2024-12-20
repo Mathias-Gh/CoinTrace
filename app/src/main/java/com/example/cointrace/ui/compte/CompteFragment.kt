@@ -73,13 +73,13 @@ class CompteFragment : Fragment() {
 // Bonjour blabla ooooooooooo
 
         binding.loginButton.setOnClickListener {
-            val email = binding.username.text.toString()
+            val pseudo = binding.username.text.toString()
             val password = binding.password.text.toString()
 
-            if (databaseHelper.checkUser(email, password)) {
+            if (databaseHelper.checkUser(pseudo, password)) {
                 Toast.makeText(requireContext(), "Connexion réussie !", Toast.LENGTH_SHORT).show()
                 compteViewModel.isLoggedIn = true
-                compteViewModel.currentUsername = email
+                compteViewModel.currentUsername = pseudo
                 showAccountScreen()
             } else {
                 Toast.makeText(requireContext(), "Échec de la connexion !", Toast.LENGTH_SHORT).show()
