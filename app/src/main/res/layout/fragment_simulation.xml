@@ -19,7 +19,6 @@
             android:textSize="20sp"
             android:textStyle="bold" />
 
-
         <!-- montant -->
         <EditText
             android:id="@+id/montant_input"
@@ -30,11 +29,7 @@
             android:minHeight="48dp" />
 
         <!-- Sélecteur -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Choisissez une Crypto-monnaie :" />
+
 
         <EditText
             android:id="@+id/date_input1"
@@ -53,6 +48,12 @@
             android:focusable="false"
             android:hint="date de fin"
             android:minHeight="48dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Choisissez une Crypto-monnaie :" />
 
         <Spinner
             android:id="@+id/crypto_spinner"
