@@ -1,7 +1,12 @@
 package com.example.cointrace.ui
 
+import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
@@ -10,16 +15,26 @@ import com.example.cointrace.R
 
 class CryptoDetailActivity : AppCompatActivity() {
 
+    private var isFavorite: Boolean = false // État du favori
+    private lateinit var sharedPreferences: SharedPreferences
+    private lateinit var cryptoName: String
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Définir le layout de l'activité
+        setContentView(R.layout.activity_crypto_detail)
+
         supportActionBar?.hide()
+
+        // Référence au bouton "Retour"
+        val backButton: Button = findViewById(R.id.button)
+        backButton.setOnClickListener {
+            finish() // Termine l'activité actuelle et revient à l'écran précédent
+        }
 
         // Activer le mode edge-to-edge pour que l'interface s'ajuste aux bords
         enableEdgeToEdge()
-
-        // Définir le layout de l'activité
-        setContentView(R.layout.activity_crypto_detail)
 
         // Gérer les insets pour que le contenu prenne en compte les barres système
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
@@ -28,12 +43,18 @@ class CryptoDetailActivity : AppCompatActivity() {
             insets // Retourner les insets modifiés
         }
 
+        // Initialiser SharedPreferences pour persister les données
+        sharedPreferences = getSharedPreferences("CryptoPrefs", MODE_PRIVATE)
+
         // Récupérer le nom de la crypto passé par l'Intent
-        val cryptoName = intent.getStringExtra("CRYPTO_NAME")
+        cryptoName = intent.getStringExtra("CRYPTO_NAME") ?: "Nom non disponible"
 
         // Afficher le nom de la crypto dans le TextView
         val cryptoNameTextView: TextView = findViewById(R.id.cryptoNameTextView)
-        cryptoNameTextView.text = cryptoName ?: "Nom non disponible"
+        cryptoNameTextView.text = cryptoName
+
+        // Vérifier si cette crypto est déjà dans les favoris
+        isFavorite = sharedPreferences.getBoolean(cryptoName, false)
 
     }
 }

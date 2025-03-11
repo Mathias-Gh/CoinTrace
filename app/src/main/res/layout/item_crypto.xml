@@ -30,7 +30,20 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="end"
+            android:paddingHorizontal="10dp"
             android:text="$20,000"
-            android:textSize="16sp"/>
+            android:textSize="16sp" />
+
+        <ImageButton
+            android:id="@+id/favoriteButton"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_favorite_border"
+            android:contentDescription="Ajouter aux favoris"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:tint="#D1D1D1"/>
+
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

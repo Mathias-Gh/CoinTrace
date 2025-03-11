@@ -10,10 +10,14 @@
     tools:context=".ui.marche.MarchéFragment">
 
     <!-- RecyclerView -->
+
+    <!-- ProgressBar -->
+
     <TextView
         android:id="@+id/titleTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
         android:text="Marché des Cryptomonnaies"
         android:textAlignment="center"
         android:textColor="@color/title_text_color"
@@ -22,9 +26,7 @@
         app:layout_constraintBottom_toTopOf="@id/cryptoRecyclerView"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <!-- ProgressBar -->
+        app:layout_constraintTop_toBottomOf="@+id/viewFavoritesButton" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/cryptoRecyclerView"
@@ -47,14 +49,25 @@
         android:id="@+id/progressBar"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp"
         android:indeterminateTint="@color/progress_bar_color"
-        android:visibility="gone" />
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/emptyStateTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Texte pour liste vide -->
+
+    <Button
+        android:id="@+id/viewFavoritesButton"
+        android:layout_width="184dp"
+        android:layout_height="40dp"
+        android:text="Voir mes favoris"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/emptyStateTextView"
         android:layout_width="wrap_content"
@@ -66,5 +79,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:visibility="gone" />
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"/>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

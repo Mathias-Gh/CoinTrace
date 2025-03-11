@@ -17,6 +17,9 @@
         android:theme="@style/Theme.CoinTrace"
         tools:targetApi="31">
         <activity
+            android:name=".ui.FavoritesActivity"
+            android:exported="true" />
+        <activity
             android:name=".ui.CryptoDetailActivity"
             android:exported="false" />
         <activity
