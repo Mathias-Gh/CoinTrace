@@ -1,5 +1,6 @@
 package com.example.cointrace.ui.marche
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -17,6 +18,7 @@ import com.example.cointrace.adapters.CryptoAdapter
 import com.example.cointrace.models.CryptoCurrency
 import com.example.cointrace.network.RetrofitInstance
 import com.example.cointrace.ui.CryptoDetailActivity
+import com.example.cointrace.ui.FavoritesActivity
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -27,6 +29,9 @@ class MarchéFragment : Fragment() {
     private lateinit var cryptoAdapter: CryptoAdapter
     private lateinit var progressBar: ProgressBar
     private lateinit var emptyStateTextView: TextView
+
+    // Liste pour stocker les favoris
+    private val favoriteCryptoIds = mutableSetOf<String>()
 
     companion object {
         private const val TAG = "MarchéFragment"
@@ -39,13 +44,21 @@ class MarchéFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_marche, container, false)
 
-        // Initialisation de la RecyclerView, ProgressBar, et TextView pour état vide
         cryptoRecyclerView = view.findViewById(R.id.cryptoRecyclerView)
         progressBar = view.findViewById(R.id.progressBar)
-        emptyStateTextView = view.findViewById(R.id.emptyStateTextView) // Initialisation manquante
-        cryptoRecyclerView.layoutManager = LinearLayoutManager(context)
+        emptyStateTextView = view.findViewById(R.id.emptyStateTextView)
 
-        // Charger les données de l'API
+        // Bouton pour voir les favoris
+        val viewFavoritesButton: View = view.findViewById(R.id.viewFavoritesButton)
+        viewFavoritesButton.setOnClickListener {
+            showFavorites()
+        }
+
+        cryptoRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        // Charger les favoris enregistrés dans SharedPreferences
+        loadFavoriteCryptos()
+
         fetchCryptoData()
 
         return view
@@ -54,7 +67,7 @@ class MarchéFragment : Fragment() {
     private fun fetchCryptoData() {
         progressBar.visibility = View.VISIBLE
         cryptoRecyclerView.visibility = View.GONE
-        emptyStateTextView.visibility = View.GONE // Cacher le message d'état vide
+        emptyStateTextView.visibility = View.GONE
 
         val call = RetrofitInstance.api.getCryptoData(currency = "eur", perPage = 15)
 
@@ -69,13 +82,13 @@ class MarchéFragment : Fragment() {
                     val cryptoList = response.body()
                     handleCryptoData(cryptoList)
                 } else {
-                    showError("Erreur API : ${response.errorBody()?.string()}")
+                    showError("Erreur API : ${response.code()} - ${response.message()}")
                 }
             }
 
             override fun onFailure(call: Call<List<CryptoCurrency>>, t: Throwable) {
                 progressBar.visibility = View.GONE
-                showError("Erreur réseau : ${t.message}")
+                showError("Erreur réseau : ${t.localizedMessage ?: "Une erreur inconnue est survenue."}")
             }
         })
     }
@@ -87,15 +100,25 @@ class MarchéFragment : Fragment() {
         }
 
         val filteredList = filterCryptoData(cryptoList)
+
         if (filteredList.isEmpty()) {
             showError("Aucune crypto disponible après filtrage.")
         } else {
-            cryptoAdapter = CryptoAdapter(filteredList) { crypto ->
-                // Action au clic sur la crypto, par exemple ouvrir une nouvelle activité
-                val intent = Intent(context, CryptoDetailActivity::class.java)
-                intent.putExtra("CRYPTO_NAME", crypto.name)
-                startActivity(intent)
-            }
+            cryptoAdapter = CryptoAdapter(
+                cryptoList = filteredList,
+                onItemClick = { crypto ->
+                    val intent = Intent(requireContext(), CryptoDetailActivity::class.java)
+                    intent.putExtra("CRYPTO_NAME", crypto.name)
+                    startActivity(intent)
+                },
+                onFavoriteClick = { crypto ->
+                    toggleFavorite(crypto)
+                },
+                isFavoriteCheck = { crypto ->
+                    isFavorite(crypto)
+                }
+            )
+
             cryptoRecyclerView.adapter = cryptoAdapter
             cryptoRecyclerView.visibility = View.VISIBLE
             Log.d(TAG, "Données filtrées : $filteredList")
@@ -108,9 +131,54 @@ class MarchéFragment : Fragment() {
         }
     }
 
+    private fun toggleFavorite(crypto: CryptoCurrency) {
+        val sharedPreferences =
+            requireContext().getSharedPreferences("CryptoPrefs", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+
+        if (favoriteCryptoIds.contains(crypto.id)) {
+            favoriteCryptoIds.remove(crypto.id)
+            editor.putBoolean(crypto.id, false)
+        } else {
+            favoriteCryptoIds.add(crypto.id)
+            editor.putBoolean(crypto.id, true)
+        }
+
+        // Enregistrer les favoris dans SharedPreferences
+        editor.apply()
+
+        // Mettre à jour l'affichage de la RecyclerView après modification
+        cryptoAdapter.notifyDataSetChanged()
+    }
+
+    private fun isFavorite(crypto: CryptoCurrency): Boolean {
+        return favoriteCryptoIds.contains(crypto.id)
+    }
+
     private fun showError(message: String) {
         Log.e(TAG, message)
-        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
-        emptyStateTextView.visibility = View.VISIBLE // Afficher l'état vide
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+        emptyStateTextView.visibility = View.VISIBLE
     }
+
+    // Fonction pour naviguer vers l'écran des favoris
+    private fun showFavorites() {
+        val intent = Intent(requireContext(), FavoritesActivity::class.java)
+        startActivity(intent)
+    }
+
+    // Charger les favoris enregistrés dans SharedPreferences
+    private fun loadFavoriteCryptos() {
+        val sharedPreferences =
+            requireContext().getSharedPreferences("CryptoPrefs", Context.MODE_PRIVATE)
+        val allKeys = sharedPreferences.all
+
+        // Chargement des favoris depuis SharedPreferences
+        for (key in allKeys.keys) {
+            if (sharedPreferences.getBoolean(key, false)) {
+                favoriteCryptoIds.add(key)
+            }
+        }
+    }
+
 }
