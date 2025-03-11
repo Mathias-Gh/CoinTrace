@@ -28,4 +28,10 @@
         android:name="com.example.cointrace.ui.note.NoteFragment"
         android:label="@string/title_note"
         tools:layout="@layout/fragment_note" />
+
+    <fragment
+        android:id="@+id/navigation_wallet"
+        android:name="com.example.cointrace.ui.wallet.WalletFragment"
+        android:label="@string/title_wallet"
+        tools:layout="@layout/fragment_wallet" />
 </navigation>

@@ -4,6 +4,7 @@
     <string name="title_simulation">Simulation</string>
     <string name="title_note">Note</string>
     <string name="title_compte">Compte</string>
+    <string name="title_wallet">Note</string>
     <string-array name="spinner_crypto_options">
         <item>Bitcoin (BTC)</item>
         <item>Ethereum (ETH)</item>

@@ -52,9 +52,10 @@ class CompteFragment : Fragment() {
             val email = binding.email.text.toString()
             val password = binding.registerPassword.text.toString()
 
+
             if (pseudo.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
                 val dbHelper = DatabaseHelper(requireContext())
-                val result = dbHelper.insertUser(email, password, pseudo)
+                val result = dbHelper.insertUser(email, password, pseudo, "")
 
                 if (result != -1L) {
                     Toast.makeText(requireContext(), "Inscription réussie !", Toast.LENGTH_SHORT).show()
@@ -69,17 +70,16 @@ class CompteFragment : Fragment() {
             }
         }
 
-
-
+// Bonjour blabla ooooooooooo
 
         binding.loginButton.setOnClickListener {
-            val email = binding.username.text.toString()
+            val pseudo = binding.username.text.toString()
             val password = binding.password.text.toString()
 
-            if (databaseHelper.checkUser(email, password)) {
+            if (databaseHelper.checkUser(pseudo, password)) {
                 Toast.makeText(requireContext(), "Connexion réussie !", Toast.LENGTH_SHORT).show()
                 compteViewModel.isLoggedIn = true
-                compteViewModel.currentUsername = email
+                compteViewModel.currentUsername = pseudo
                 showAccountScreen()
             } else {
                 Toast.makeText(requireContext(), "Échec de la connexion !", Toast.LENGTH_SHORT).show()

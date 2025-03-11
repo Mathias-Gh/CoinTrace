@@ -38,7 +38,7 @@ android {
     }
 }
 
-dependencies {
+dependencies { // Utilisation de libs
     implementation(libs.retrofit.gson)
     implementation("com.squareup.retrofit2:retrofit:${libs.versions.retrofit.get()}")
     implementation("androidx.recyclerview:recyclerview:${libs.versions.androidx.recyclerview.get()}")
@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.androidx.activity)
     implementation(libs.androidx.media3.common.ktx)
+    implementation(libs.androidx.fragment.ktx)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
