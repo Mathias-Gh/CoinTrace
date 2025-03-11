@@ -17,7 +17,9 @@ import com.example.cointrace.network.RetrofitInstance
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 
 class SimulationFragment : Fragment() {
 
@@ -292,7 +294,7 @@ class SimulationFragment : Fragment() {
     }
 
     private fun calculateDaysDifference(startDate: String, endDate: String): Int {
-        val formatter = java.text.SimpleDateFormat("dd/MM/yyyy", java.util.Locale.getDefault())
+        val formatter = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
         try {
             // Convertir les dates en objets Date

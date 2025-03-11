@@ -21,4 +21,9 @@
         android:icon="@drawable/compte"
         android:title="@string/title_compte" />
 
+    <item
+        android:id="@+id/navigation_wallet"
+        android:icon="@drawable/wallet"
+        android:title="@string/title_wallet" />
+
 </menu>

@@ -15,6 +15,7 @@ navigationFragmentKtx = "2.8.5"
 navigationUiKtx = "2.8.5"
 retrofit = "2.9.0"
 activity = "1.9.3"
+fragmentKtx = "1.8.6"
 
 [libraries]
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version = "2.9.0" }
@@ -32,6 +33,7 @@ androidx-lifecycle-viewmodel-ktx = { group = "androidx.lifecycle", name = "lifec
 androidx-navigation-fragment-ktx = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navigationFragmentKtx" }
 androidx-navigation-ui-ktx = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navigationUiKtx" }
 androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "fragmentKtx" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

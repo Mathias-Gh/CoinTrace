@@ -34,5 +34,6 @@ class CryptoDetailActivity : AppCompatActivity() {
         // Afficher le nom de la crypto dans le TextView
         val cryptoNameTextView: TextView = findViewById(R.id.cryptoNameTextView)
         cryptoNameTextView.text = cryptoName ?: "Nom non disponible"
+
     }
 }

@@ -52,10 +52,10 @@ class CompteFragment : Fragment() {
             val email = binding.email.text.toString()
             val password = binding.registerPassword.text.toString()
 
+
             if (pseudo.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
                 val dbHelper = DatabaseHelper(requireContext())
-                val result = dbHelper.insertUser(email, password, pseudo)
-
+                val result = dbHelper.insertUser(email, password, pseudo, "")
 
                 if (result != -1L) {
                     Toast.makeText(requireContext(), "Inscription réussie !", Toast.LENGTH_SHORT).show()
