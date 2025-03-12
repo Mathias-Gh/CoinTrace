@@ -112,7 +112,7 @@ class CompteFragment : Fragment() {
             compteViewModel.currentUsername = null
 
             // Effacer l'ID de l'utilisateur des SharedPreferences
-            val sharedPreferences = requireContext().getSharedPreferences("notes", Context.MODE_PRIVATE)
+            val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
             with(sharedPreferences.edit()) {
                 remove("user_id")
                 apply()
