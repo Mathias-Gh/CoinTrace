@@ -1,5 +1,6 @@
 package com.example.cointrace.ui.compte
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -52,12 +53,21 @@ class CompteFragment : Fragment() {
             val email = binding.email.text.toString()
             val password = binding.registerPassword.text.toString()
 
-
             if (pseudo.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
                 val dbHelper = DatabaseHelper(requireContext())
                 val result = dbHelper.insertUser(email, password, pseudo, "")
 
                 if (result != -1L) {
+                    // Récupérer l'ID de l'utilisateur depuis la base de données
+                    val userId = dbHelper.getUserId(pseudo, password)
+
+                    // Enregistrer l'ID de l'utilisateur dans les SharedPreferences
+                    val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    with(sharedPreferences.edit()) {
+                        putLong("user_id", userId)
+                        apply()
+                    }
+
                     Toast.makeText(requireContext(), "Inscription réussie !", Toast.LENGTH_SHORT).show()
                     compteViewModel.isLoggedIn = true
                     compteViewModel.currentUsername = pseudo
@@ -77,6 +87,16 @@ class CompteFragment : Fragment() {
             val password = binding.password.text.toString()
 
             if (databaseHelper.checkUser(pseudo, password)) {
+                // Récupérer l'ID de l'utilisateur depuis la base de données
+                val userId = databaseHelper.getUserId(pseudo, password)
+
+                // Enregistrer l'ID de l'utilisateur dans les SharedPreferences
+                val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                with(sharedPreferences.edit()) {
+                    putLong("user_id", userId)
+                    apply()
+                }
+
                 Toast.makeText(requireContext(), "Connexion réussie !", Toast.LENGTH_SHORT).show()
                 compteViewModel.isLoggedIn = true
                 compteViewModel.currentUsername = pseudo
@@ -85,10 +105,18 @@ class CompteFragment : Fragment() {
                 Toast.makeText(requireContext(), "Échec de la connexion !", Toast.LENGTH_SHORT).show()
             }
         }
+
         binding.logoutButton.setOnClickListener {
             // Déconnexion : réinitialiser l'état de l'utilisateur
             compteViewModel.isLoggedIn = false
             compteViewModel.currentUsername = null
+
+            // Effacer l'ID de l'utilisateur des SharedPreferences
+            val sharedPreferences = requireContext().getSharedPreferences("notes", Context.MODE_PRIVATE)
+            with(sharedPreferences.edit()) {
+                remove("user_id")
+                apply()
+            }
 
             // Afficher l'écran de connexion
             showLoginScreen()

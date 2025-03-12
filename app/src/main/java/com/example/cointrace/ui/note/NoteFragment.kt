@@ -11,6 +11,7 @@ import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
+import com.example.cointrace.DatabaseHelper
 import com.example.cointrace.R
 import com.example.cointrace.databinding.FragmentNoteBinding
 import com.google.android.material.snackbar.Snackbar
@@ -24,7 +25,7 @@ class NoteFragment : Fragment(), NotesAdapter.NoteActionListener {
     private lateinit var notes: ArrayList<String>
     private lateinit var adapter: NotesAdapter
     private var noteToEdit: String? = null // Stocke la note sélectionnée pour modification
-
+    private var userId: Long = -1 // Stocke l'ID de l'utilisateur connecté
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,7 +35,10 @@ class NoteFragment : Fragment(), NotesAdapter.NoteActionListener {
         _binding = FragmentNoteBinding.inflate(inflater, container, false)
 
         // Initialisation de SharedPreferences
-        sharedPreferences = requireContext().getSharedPreferences("notes", Context.MODE_PRIVATE)
+        sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+
+        // Récupérer l'ID de l'utilisateur connecté
+        userId = sharedPreferences.getLong("user_id", -1)
 
         // Initialisation des notes
         notes = ArrayList()
@@ -74,43 +78,79 @@ class NoteFragment : Fragment(), NotesAdapter.NoteActionListener {
 
     // Méthode pour enregistrer une note
     private fun saveNote(note: String) {
-        with(sharedPreferences.edit()) {
-            putString(note, note)
-            apply()
+        if (userId != -1L) {
+            val dbHelper = DatabaseHelper(requireContext())
+            dbHelper.insertNote(userId, note)
+            notes.add(note)
+            adapter.notifyDataSetChanged()
+            binding.editTextNote.text.clear()
+        } else {
+            Toast.makeText(requireContext(), "Utilisateur non connecté.", Toast.LENGTH_SHORT).show()
         }
-        notes.add(note)
-        adapter.notifyDataSetChanged()
-        binding.editTextNote.text.clear()
     }
 
     // Méthode pour mettre à jour une note existante
     private fun updateNote(oldNote: String, newNote: String) {
-        with(sharedPreferences.edit()) {
-            remove(oldNote) // Supprimer l'ancienne note
-            putString(newNote, newNote) // Ajouter la nouvelle note
-            apply()
+        if (userId != -1L) {
+            val dbHelper = DatabaseHelper(requireContext())
+            val cursor = dbHelper.getNotesByUser(userId)
+            if (cursor.moveToFirst()) {
+                do {
+                    val noteId = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
+                    val note = cursor.getString(cursor.getColumnIndexOrThrow("note"))
+                    if (note == oldNote) {
+                        dbHelper.updateNote(noteId, newNote)
+                        break
+                    }
+                } while (cursor.moveToNext())
+            }
+            cursor.close()
+            loadNotes()
+            binding.editTextNote.text.clear()
+        } else {
+            Toast.makeText(requireContext(), "Utilisateur non connecté.", Toast.LENGTH_SHORT).show()
         }
-        loadNotes()
-        binding.editTextNote.text.clear()
     }
 
     // Méthode pour charger les notes existantes
     private fun loadNotes() {
-        notes.clear()
-        val allNotes = sharedPreferences.all
-        for (entry in allNotes.entries) {
-            notes.add(entry.value.toString())
+        if (userId != -1L) {
+            notes.clear()
+            val dbHelper = DatabaseHelper(requireContext())
+            val cursor = dbHelper.getNotesByUser(userId)
+            if (cursor.moveToFirst()) {
+                do {
+                    val note = cursor.getString(cursor.getColumnIndexOrThrow("note"))
+                    notes.add(note)
+                } while (cursor.moveToNext())
+            }
+            cursor.close()
+            adapter.notifyDataSetChanged()
+        } else {
+            Toast.makeText(requireContext(), "Utilisateur non connecté.", Toast.LENGTH_SHORT).show()
         }
-        adapter.notifyDataSetChanged()
     }
 
     // Implémentation de la méthode pour supprimer une note
     override fun onDeleteNote(note: String) {
-        with(sharedPreferences.edit()) {
-            remove(note)
-            apply()
+        if (userId != -1L) {
+            val dbHelper = DatabaseHelper(requireContext())
+            val cursor = dbHelper.getNotesByUser(userId)
+            if (cursor.moveToFirst()) {
+                do {
+                    val noteId = cursor.getLong(cursor.getColumnIndexOrThrow("id"))
+                    val noteText = cursor.getString(cursor.getColumnIndexOrThrow("note"))
+                    if (noteText == note) {
+                        dbHelper.deleteNoteById(noteId)
+                        break
+                    }
+                } while (cursor.moveToNext())
+            }
+            cursor.close()
+            loadNotes()
+        } else {
+            Toast.makeText(requireContext(), "Utilisateur non connecté.", Toast.LENGTH_SHORT).show()
         }
-        loadNotes()
     }
 
     override fun onEditNote(note: String) {
@@ -119,7 +159,6 @@ class NoteFragment : Fragment(), NotesAdapter.NoteActionListener {
         binding.editTextNote.setText(note) // Charge la note dans le champ de texte
         binding.saveBtn.text = "Modifier" // Change le texte du bouton
     }
-
 
     override fun onDestroyView() {
         super.onDestroyView()
