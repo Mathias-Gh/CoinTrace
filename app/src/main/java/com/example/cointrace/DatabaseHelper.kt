@@ -10,7 +10,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "cointrace_bdd"
-        private const val DATABASE_VERSION = 2
+        private const val DATABASE_VERSION = 3
 
         // Tables and columns
         private const val TABLE_USER = "user_data"
@@ -19,6 +19,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val TABLE_NOTES = "notes"
         private const val COLUMN_ID = "id"
         private const val COLUMN_BALANCE = "balance"
+        private const val COLUMN_USER_ID = "user_id"
+
 
         // User table columns
         private const val COLUMN_EMAIL = "email"
@@ -32,7 +34,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_RESULT = "result"
 
         // Notes table columns
-        private const val COLUMN_USER_ID = "user_id"
         private const val COLUMN_NOTE = "note"
     }
 
@@ -41,7 +42,7 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val createTables = listOf(
             "CREATE TABLE $TABLE_USER ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_EMAIL TEXT, $COLUMN_PASSWORD TEXT, $COLUMN_PSEUDO TEXT)",
             "CREATE TABLE $TABLE_SIMULATIONS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_CRYPTO_NAME TEXT, $COLUMN_DATE TEXT, $COLUMN_AMOUNT REAL, $COLUMN_RESULT REAL)",
-            "CREATE TABLE $TABLE_WALLET ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_BALANCE REAL NOT NULL)",
+            "CREATE TABLE $TABLE_WALLET ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_BALANCE REAL NOT NULL, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))",
             "CREATE TABLE $TABLE_NOTES ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_NOTE TEXT, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))"
         )
         createTables.forEach { db.execSQL(it) }
@@ -73,6 +74,21 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         })
     }
 
+    // Méthode pour mettre à jour une note par son ID
+    fun updateNote(noteId: Long, newNote: String): Int {
+        val db = writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_NOTE, newNote)
+        }
+        return db.update(TABLE_NOTES, contentValues, "$COLUMN_ID = ?", arrayOf(noteId.toString()))
+    }
+
+    // Méthode pour supprimer une note par son ID
+    fun deleteNoteById(noteId: Long): Int {
+        val db = writableDatabase
+        return db.delete(TABLE_NOTES, "$COLUMN_ID = ?", arrayOf(noteId.toString()))
+    }
+
     fun getNotesByUser(userId: Long): Cursor {
         val db = readableDatabase
         return db.rawQuery("SELECT * FROM $TABLE_NOTES WHERE $COLUMN_USER_ID = ?", arrayOf(userId.toString()))
@@ -91,6 +107,24 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun getAllUsers(): Cursor = getAllData(TABLE_USER)
 
+    // Dans DatabaseHelper.kt
+
+    fun getUserId(pseudo: String, password: String): Long {
+        val db = readableDatabase
+        val cursor = db.rawQuery(
+            "SELECT $COLUMN_ID FROM $TABLE_USER WHERE $COLUMN_PSEUDO = ? AND $COLUMN_PASSWORD = ?",
+            arrayOf(pseudo, password)
+        )
+        return if (cursor.moveToFirst()) {
+            val userId = cursor.getLong(cursor.getColumnIndexOrThrow(COLUMN_ID))
+            cursor.close()
+            userId
+        } else {
+            cursor.close()
+            -1
+        }
+    }
+
     // Simulation methods
     fun insertSimulation(cryptoName: String, date: String, amount: Double, result: Double): Long {
         return insertData(TABLE_SIMULATIONS, ContentValues().apply {
@@ -103,26 +137,28 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     fun getAllSimulations(): Cursor = getAllData(TABLE_SIMULATIONS)
 
-    // Wallet methods
-    fun insertWallet(balance: Double): Long {
+    // Mettre à jour les méthodes liées au portefeuille pour inclure user_id
+    fun insertWallet(userId: Long, balance: Double): Long {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
+            put(COLUMN_USER_ID, userId)
             put(COLUMN_BALANCE, balance)
         }
         return db.insert(TABLE_WALLET, null, contentValues)
     }
 
-    fun updateWallet(id: Long, balance: Double): Int {
+    fun updateWallet(id: Long, userId: Long, balance: Double): Int {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply {
+            put(COLUMN_USER_ID, userId)
             put(COLUMN_BALANCE, balance)
         }
         return db.update(TABLE_WALLET, contentValues, "$COLUMN_ID = ?", arrayOf(id.toString()))
     }
 
-    fun getWallet(): Cursor {
+    fun getWalletByUser(userId: Long): Cursor {
         val db = this.readableDatabase
-        return db.rawQuery("SELECT * FROM $TABLE_WALLET LIMIT 1", null)
+        return db.rawQuery("SELECT * FROM $TABLE_WALLET WHERE $COLUMN_USER_ID = ?", arrayOf(userId.toString()))
     }
 
     // Generic methods
@@ -134,5 +170,10 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     private fun getAllData(table: String): Cursor {
         val db = readableDatabase
         return db.rawQuery("SELECT * FROM $table", null)
+    }
+
+    fun getUserData(userId: Long): Cursor {
+        val db = readableDatabase
+        return db.rawQuery("SELECT * FROM $TABLE_USER WHERE $COLUMN_ID = ?", arrayOf(userId.toString()))
     }
 }

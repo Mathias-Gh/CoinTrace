@@ -43,12 +43,6 @@ class MainActivity : AppCompatActivity() {
         // Initialize the database
         dbHelper = DatabaseHelper(this)
 
-        // Example: Insert user data
-        insertExampleUser()
-
-        // Example: Insert a simulation
-        insertExampleSimulation()
-
         // Retrieve and display user data
         displayAllUsers()
 
@@ -66,28 +60,6 @@ class MainActivity : AppCompatActivity() {
             )
         )
         navView.setupWithNavController(navController)
-    }
-
-    /* Inserts an example user into the database */
-    private fun insertExampleUser() {
-        val userId = dbHelper.insertUser(
-            email = "user@example.com",
-            password = "mypassword123",
-            pseudo = "UserPseudo",
-            notes = "Important notes"
-        )
-        Log.d("DatabaseInfo", "User inserted with ID: $userId")
-    }
-
-    /* Inserts an example simulation into the database */
-    private fun insertExampleSimulation() {
-        dbHelper.insertSimulation(
-            cryptoName = "Bitcoin",
-            date = "2024-06-17",
-            amount = 1500.0,
-            result = 200.0
-        )
-        Log.d("DatabaseInfo", "Example simulation inserted: Bitcoin")
     }
 
     /* Retrieves and logs all users stored in the database */
