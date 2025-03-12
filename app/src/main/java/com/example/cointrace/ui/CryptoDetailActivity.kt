@@ -12,6 +12,8 @@ import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.example.cointrace.R
+import com.example.cointrace.ui.TraderActivity
+
 
 class CryptoDetailActivity : AppCompatActivity() {
 
@@ -56,5 +58,17 @@ class CryptoDetailActivity : AppCompatActivity() {
         // Vérifier si cette crypto est déjà dans les favoris
         isFavorite = sharedPreferences.getBoolean(cryptoName, false)
 
+
+        // Récupérer le bouton "Acheter"
+        val btnBuy = findViewById<Button>(R.id.Button2)
+
+        // Définir l'action du clic
+        btnBuy.setOnClickListener {
+            // Créer un Intent pour naviguer vers TraderActivity
+            val intent = Intent(this, TraderActivity::class.java)
+            startActivity(intent)
+
+        }
     }
 }
+
