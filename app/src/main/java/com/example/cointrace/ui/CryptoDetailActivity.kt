@@ -194,7 +194,7 @@ class CryptoDetailActivity : AppCompatActivity() {
         })
     }
 
-    // Fonction pour gérer les erreurs 429 (trop de requêtes)
+    // Fonction pour gérer les erreurs 429 (trop de requêtes d'appel api)
     private fun handleRateLimitExceeded(cryptoId: String) {
         Log.e("CryptoDetail", "Limite d'appels API atteinte. Aucune nouvelle tentative.")
         Toast.makeText(applicationContext, "Trop de requêtes envoyées. Réessayez plus tard.", Toast.LENGTH_LONG).show()
