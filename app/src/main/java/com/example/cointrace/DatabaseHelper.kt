@@ -10,13 +10,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
     companion object {
         private const val DATABASE_NAME = "cointrace_bdd"
-        private const val DATABASE_VERSION = 3
+        private const val DATABASE_VERSION = 4
 
         // Tables and columns
         private const val TABLE_USER = "user_data"
         private const val TABLE_SIMULATIONS = "simulations"
         private const val TABLE_WALLET = "wallet"
         private const val TABLE_NOTES = "notes"
+        private const val TABLE_TRADER = "trader" // New table
         private const val COLUMN_ID = "id"
         private const val COLUMN_BALANCE = "balance"
         private const val COLUMN_USER_ID = "user_id"
@@ -43,7 +44,8 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             "CREATE TABLE $TABLE_USER ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_EMAIL TEXT, $COLUMN_PASSWORD TEXT, $COLUMN_PSEUDO TEXT)",
             "CREATE TABLE $TABLE_SIMULATIONS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_CRYPTO_NAME TEXT, $COLUMN_DATE TEXT, $COLUMN_AMOUNT REAL, $COLUMN_RESULT REAL)",
             "CREATE TABLE $TABLE_WALLET ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_BALANCE REAL NOT NULL, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))",
-            "CREATE TABLE $TABLE_NOTES ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_NOTE TEXT, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))"
+            "CREATE TABLE $TABLE_NOTES ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_NOTE TEXT, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))",
+            "CREATE TABLE $TABLE_TRADER ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_CRYPTO_NAME TEXT, $COLUMN_AMOUNT REAL, $COLUMN_DATE TEXT, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))"
         )
         createTables.forEach { db.execSQL(it) }
     }
@@ -54,7 +56,16 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         db.execSQL("DROP TABLE IF EXISTS $TABLE_SIMULATIONS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_WALLET")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NOTES")
+        db.execSQL("DROP TABLE IF EXISTS $TABLE_TRADER")
         onCreate(db)
+    }
+    fun insertTrade(userId: Long, cryptoName: String, amount: Double, date: String): Long {
+        return insertData(TABLE_TRADER, ContentValues().apply {
+            put(COLUMN_USER_ID, userId)
+            put(COLUMN_CRYPTO_NAME, cryptoName)
+            put(COLUMN_AMOUNT, amount)
+            put(COLUMN_DATE, date)
+        })
     }
 
     // User methods

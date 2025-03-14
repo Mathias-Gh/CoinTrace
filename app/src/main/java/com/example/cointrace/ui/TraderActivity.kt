@@ -1,14 +1,19 @@
 package com.example.cointrace.ui
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import com.example.cointrace.DatabaseHelper
 import com.example.cointrace.R
 import com.google.android.material.snackbar.Snackbar
 
 class TraderActivity : AppCompatActivity() {
-
+    private lateinit var dbHelper: DatabaseHelper
+    private var userId: Long = -1
+    private var balance: Double = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
 
         // Enlève la barre du haut
@@ -16,6 +21,17 @@ class TraderActivity : AppCompatActivity() {
 
         setContentView(R.layout.activity_trader)
 
+        dbHelper = DatabaseHelper(this)
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        userId = sharedPreferences.getLong("user_id", -1)
+
+        if (userId != -1L) {
+            val cursor = dbHelper.getWalletByUser(userId)
+            if (cursor.moveToFirst()) {
+                balance = cursor.getDouble(cursor.getColumnIndexOrThrow("balance"))
+            }
+            cursor.close()
+        }
         // Récupère les vues
         val amountEditText = findViewById<EditText>(R.id.amountEditText)
         val spinnerCrypto = findViewById<Spinner>(R.id.spinnerCrypto)
@@ -46,17 +62,33 @@ class TraderActivity : AppCompatActivity() {
 
             // Vérification
             if (montant.isBlank()) {
-                Toast.makeText(applicationContext, "Veuillez entrer un montant !", Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    applicationContext,
+                    "Veuillez entrer un montant !",
+                    Toast.LENGTH_LONG
+                ).show()
             } else {
-                // Affiche dans la console log
-                Log.d("TRADER_ACTIVITY", "Montant saisi = $montant, Crypto choisie = $crypto")
-
-                // Option 1 : Toast
-               // Toast.makeText(applicationContext, "Vous avez choisi d'acheter $montant € de $crypto", Toast.LENGTH_LONG).show()
-
-                // Option 2 : Snackbar (plus moderne)
-                 Snackbar.make(findViewById(android.R.id.content), "Vous avez choisi d'acheter $montant € de $crypto", Snackbar.LENGTH_LONG).show()
+                val amount = montant.toDouble()
+                if (amount > balance) {
+                    Toast.makeText(applicationContext, "Solde insuffisant !", Toast.LENGTH_LONG)
+                        .show()
+                } else {
+                    balance -= amount
+                    dbHelper.updateWallet(userId, userId, balance)
+                    dbHelper.insertTrade(
+                        userId,
+                        crypto,
+                        amount,
+                        System.currentTimeMillis().toString()
+                    )
+                    Snackbar.make(
+                        findViewById(android.R.id.content),
+                        "Vous avez acheté $amount € de $crypto",
+                        Snackbar.LENGTH_LONG
+                    ).show()
+                }
             }
+
         }
     }
 }
