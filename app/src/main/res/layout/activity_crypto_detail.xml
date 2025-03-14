@@ -9,6 +9,7 @@
     android:backgroundTint="#FAF8F8"
     tools:context=".ui.CryptoDetailActivity">
 
+    <!-- Nom de la crypto -->
     <TextView
         android:id="@+id/cryptoNameTextView"
         android:layout_width="wrap_content"
@@ -22,6 +23,27 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <!-- Spinner pour sélectionner la durée -->
+    <Spinner
+        android:id="@+id/durationSpinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/cryptoNameTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Graphique de l'évolution des prix -->
+    <com.github.mikephil.charting.charts.LineChart
+        android:id="@+id/lineChart"
+        android:layout_width="0dp"
+        android:layout_height="400dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintTop_toBottomOf="@id/durationSpinner"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Bouton Retour -->
     <Button
         android:id="@+id/button"
         android:layout_width="103dp"
@@ -35,6 +57,7 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.01" />
 
+    <!-- Bouton Acheter -->
     <Button
         android:id="@+id/Button2"
         android:layout_width="wrap_content"
@@ -44,7 +67,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.467"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cryptoNameTextView"
+        app:layout_constraintTop_toBottomOf="@+id/lineChart"
         app:layout_constraintVertical_bias="0.973" />
 
 
