@@ -8,6 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.cointrace.R
 import com.example.cointrace.models.CryptoCurrency
+import android.util.Log
 
 class CryptoAdapter(
     private val cryptoList: List<CryptoCurrency>,
@@ -35,6 +36,7 @@ class CryptoAdapter(
         holder.priceTextView.text = "${crypto.current_price}€"
 
         holder.itemView.setOnClickListener {
+            Log.d("CryptoAdapter", "ID de la crypto cliquée : ${crypto.id}")  // Ajoute ce log
             onItemClick(crypto)
         }
 
