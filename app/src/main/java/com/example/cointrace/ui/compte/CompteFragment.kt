@@ -32,14 +32,24 @@ class CompteFragment : Fragment() {
 
         databaseHelper = DatabaseHelper(requireContext())
 
-        // Vérifier si l'utilisateur est déjà connecté
-        if (compteViewModel.isLoggedIn) {
+        // Vérifier si l'utilisateur est connecté via SharedPreferences
+        val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getLong("user_id", -1)
+
+        if (userId != -1L) {
+            // L'utilisateur est connecté
+            compteViewModel.isLoggedIn = true
+            compteViewModel.currentUsername = databaseHelper.getUserData(userId).use { cursor ->
+                if (cursor.moveToFirst()) cursor.getString(cursor.getColumnIndexOrThrow("pseudo")) else null
+            }
             showAccountScreen()
         } else {
+            // L'utilisateur n'est pas connecté
+            compteViewModel.isLoggedIn = false
             showLoginScreen()
         }
 
-        // Gestion des boutons
+        // Gestion des boutons (inchangée)
         binding.goToRegister.setOnClickListener {
             showRegisterScreen()
         }
@@ -54,21 +64,14 @@ class CompteFragment : Fragment() {
             val password = binding.registerPassword.text.toString()
 
             if (pseudo.isNotEmpty() && email.isNotEmpty() && password.isNotEmpty()) {
-                val dbHelper = DatabaseHelper(requireContext())
-                val result = dbHelper.insertUser(email, password, pseudo, "")
+                val result = databaseHelper.insertUser(email, password, pseudo, "")
 
                 if (result != -1L) {
-                    // Récupérer l'ID de l'utilisateur depuis la base de données
-                    val userId = dbHelper.getUserId(pseudo, password)
-
-                    // Enregistrer l'ID de l'utilisateur dans les SharedPreferences
-                    val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    val userId = databaseHelper.getUserId(pseudo, password)
                     with(sharedPreferences.edit()) {
                         putLong("user_id", userId)
                         apply()
                     }
-
-                    Toast.makeText(requireContext(), "Inscription réussie !", Toast.LENGTH_SHORT).show()
                     compteViewModel.isLoggedIn = true
                     compteViewModel.currentUsername = pseudo
                     showAccountScreen()
@@ -80,24 +83,16 @@ class CompteFragment : Fragment() {
             }
         }
 
-// Bonjour blabla ooooooooooo
-
         binding.loginButton.setOnClickListener {
             val pseudo = binding.username.text.toString()
             val password = binding.password.text.toString()
 
             if (databaseHelper.checkUser(pseudo, password)) {
-                // Récupérer l'ID de l'utilisateur depuis la base de données
                 val userId = databaseHelper.getUserId(pseudo, password)
-
-                // Enregistrer l'ID de l'utilisateur dans les SharedPreferences
-                val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
                 with(sharedPreferences.edit()) {
                     putLong("user_id", userId)
                     apply()
                 }
-
-                Toast.makeText(requireContext(), "Connexion réussie !", Toast.LENGTH_SHORT).show()
                 compteViewModel.isLoggedIn = true
                 compteViewModel.currentUsername = pseudo
                 showAccountScreen()
@@ -107,23 +102,14 @@ class CompteFragment : Fragment() {
         }
 
         binding.logoutButton.setOnClickListener {
-            // Déconnexion : réinitialiser l'état de l'utilisateur
             compteViewModel.isLoggedIn = false
             compteViewModel.currentUsername = null
-
-            // Effacer l'ID de l'utilisateur des SharedPreferences
-            val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
             with(sharedPreferences.edit()) {
                 remove("user_id")
                 apply()
             }
-
-            // Afficher l'écran de connexion
             showLoginScreen()
-
-            Toast.makeText(requireContext(), "Déconnexion réussie !", Toast.LENGTH_SHORT).show()
         }
-
 
         return binding.root
     }
