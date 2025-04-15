@@ -22,6 +22,13 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         private const val COLUMN_BALANCE = "balance"
         private const val COLUMN_USER_ID = "user_id"
 
+        data class User(
+            val id: Long,
+            val email: String,
+            val password: String,
+            val pseudo: String
+        )
+
 
         // User table columns
         private const val COLUMN_EMAIL = "email"
@@ -187,4 +194,33 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         val db = readableDatabase
         return db.rawQuery("SELECT * FROM $TABLE_USER WHERE $COLUMN_ID = ?", arrayOf(userId.toString()))
     }
+
+    fun updateUser(userId: Long, email: String, password: String, pseudo: String): Boolean {
+        val db = writableDatabase
+        val contentValues = ContentValues().apply {
+            put(COLUMN_EMAIL, email)
+            put(COLUMN_PASSWORD, password)
+            put(COLUMN_PSEUDO, pseudo)
+        }
+
+        val result = db.update(TABLE_USER, contentValues, "$COLUMN_ID = ?", arrayOf(userId.toString()))
+        db.close()
+        return result > 0
+    }
+
+    fun getUserById(userId: Long): User? {
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM $TABLE_USER WHERE $COLUMN_ID = ?", arrayOf(userId.toString()))
+        var user: User? = null
+
+        if (cursor.moveToFirst()) {
+            val email = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_EMAIL))
+            val password = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PASSWORD))
+            val pseudo = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_PSEUDO))
+            user = User(userId, email, password, pseudo)
+        }
+        cursor.close()
+        return user
+    }
+
 }
