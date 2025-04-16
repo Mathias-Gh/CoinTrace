@@ -10,6 +10,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.cointrace.databinding.FragmentCompteBinding
 import com.example.cointrace.DatabaseHelper
+import androidx.navigation.fragment.findNavController
+import com.example.cointrace.R
 
 
 class CompteFragment : Fragment() {
@@ -111,6 +113,10 @@ class CompteFragment : Fragment() {
             showLoginScreen()
         }
 
+        binding.modifyAccountButton.setOnClickListener {
+            findNavController().navigate(R.id.action_navigation_compte_to_modifyAccountFragment)
+        }
+
         return binding.root
     }
 
@@ -130,9 +136,11 @@ class CompteFragment : Fragment() {
         binding.loginLayout.visibility = View.GONE
         binding.registerLayout.visibility = View.GONE
         binding.accountLayout.visibility = View.VISIBLE
-        binding.welcomeMessage.text = "Bienvenue, ${compteViewModel.currentUsername} !"
-    }
 
+        val username = compteViewModel.currentUsername ?: "Utilisateur inconnu"
+        binding.welcomeMessage.text = "Bienvenue, $username !"
+        binding.userInfo.text = "Nom d'utilisateur : $username"
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
