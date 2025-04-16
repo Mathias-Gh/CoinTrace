@@ -3,68 +3,88 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:padding="24dp"
     tools:context=".ui.compte.ModifyAccountFragment">
 
+    <TextView
+        android:id="@+id/titleText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mon compte"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="32dp" />
 
     <EditText
         android:id="@+id/usernameEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="120dp"
         android:hint="Nom d'utilisateur"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColorHint="#888888"
+        app:layout_constraintTop_toBottomOf="@id/titleText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="24dp" />
 
     <EditText
         android:id="@+id/emailEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:hint="Email"
         android:inputType="textEmailAddress"
-        android:padding="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColorHint="#888888"
+        app:layout_constraintTop_toBottomOf="@id/usernameEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/usernameEditText" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
     <EditText
         android:id="@+id/currentPasswordEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="28dp"
         android:hint="Mot de passe actuel"
         android:inputType="textPassword"
-        android:padding="8dp"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColorHint="#888888"
         app:layout_constraintTop_toBottomOf="@id/emailEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
     <EditText
         android:id="@+id/newPasswordEditText"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         android:hint="Nouveau mot de passe"
         android:inputType="textPassword"
-        android:padding="8dp"
+        android:background="@drawable/edittext_background"
+        android:padding="12dp"
+        android:textColorHint="#888888"
         app:layout_constraintTop_toBottomOf="@id/currentPasswordEditText"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="16dp" />
 
     <Button
         android:id="@+id/saveButton"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:backgroundTint="#4E2B92"
+        android:padding="12dp"
         android:text="Sauvegarder"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/emailEditText"
-        app:layout_constraintVertical_bias="0.426" />
+        app:layout_constraintTop_toBottomOf="@id/newPasswordEditText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

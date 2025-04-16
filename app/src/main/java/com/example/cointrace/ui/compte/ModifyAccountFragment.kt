@@ -44,20 +44,32 @@ class ModifyAccountFragment : Fragment() {
             val currentPassword = binding.currentPasswordEditText.text.toString()
             val newPassword = binding.newPasswordEditText.text.toString()
 
-            if (newUsername.isNotEmpty() && newEmail.isNotEmpty() && currentPassword.isNotEmpty() && newPassword.isNotEmpty()) {
-                if (databaseHelper.checkUser(currentUserPseudo ?: "", currentPassword)) {
-                    val updated = databaseHelper.updateUser(userId, newEmail, newPassword, newUsername)
-                    if (updated) {
-                        Toast.makeText(requireContext(), "Compte mis à jour !", Toast.LENGTH_SHORT).show()
-                        requireActivity().onBackPressedDispatcher.onBackPressed()
-                    } else {
-                        Toast.makeText(requireContext(), "Erreur lors de la mise à jour.", Toast.LENGTH_SHORT).show()
-                    }
-                } else {
-                    Toast.makeText(requireContext(), "Mot de passe actuel incorrect.", Toast.LENGTH_SHORT).show()
+            // Vérifier si l'utilisateur veut changer son mot de passe
+            val wantsToChangePassword = newPassword.isNotEmpty()
+
+            val user = databaseHelper.getUserById(userId)
+            val finalUsername = if (newUsername.isNotEmpty()) newUsername else user?.pseudo ?: ""
+            val finalEmail = if (newEmail.isNotEmpty()) newEmail else user?.email ?: ""
+            val finalPassword = if (wantsToChangePassword) newPassword else user?.password ?: ""
+
+            if (wantsToChangePassword) {
+                if (currentPassword.isEmpty()) {
+                    Toast.makeText(requireContext(), "Entrez le mot de passe actuel pour en définir un nouveau.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
                 }
+
+                if (!databaseHelper.checkUser(currentUserPseudo ?: "", currentPassword)) {
+                    Toast.makeText(requireContext(), "Mot de passe actuel incorrect.", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+            }
+
+            val updated = databaseHelper.updateUser(userId, finalEmail, finalPassword, finalUsername)
+            if (updated) {
+                Toast.makeText(requireContext(), "Compte mis à jour !", Toast.LENGTH_SHORT).show()
+                requireActivity().onBackPressedDispatcher.onBackPressed()
             } else {
-                Toast.makeText(requireContext(), "Tous les champs doivent être remplis.", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Erreur lors de la mise à jour.", Toast.LENGTH_SHORT).show()
             }
         }
 
