@@ -18,12 +18,6 @@
         tools:layout="@layout/fragment_simulation" />
 
     <fragment
-        android:id="@+id/navigation_compte"
-        android:name="com.example.cointrace.ui.compte.CompteFragment"
-        android:label="@string/title_compte"
-        tools:layout="@layout/fragment_compte" />
-
-    <fragment
         android:id="@+id/navigation_note"
         android:name="com.example.cointrace.ui.note.NoteFragment"
         android:label="@string/title_note"
@@ -34,4 +28,22 @@
         android:name="com.example.cointrace.ui.wallet.WalletFragment"
         android:label="@string/title_wallet"
         tools:layout="@layout/fragment_wallet" />
+
+    <fragment
+        android:id="@+id/navigation_compte"
+        android:name="com.example.cointrace.ui.compte.CompteFragment"
+        android:label="@string/title_compte"
+        tools:layout="@layout/fragment_compte">
+
+        <action
+            android:id="@+id/action_navigation_compte_to_modifyAccountFragment"
+            app:destination="@id/modifyAccountFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/modifyAccountFragment"
+        android:name="com.example.cointrace.ui.compte.ModifyAccountFragment"
+        android:label="Modifier compte"
+        tools:layout="@layout/fragment_modify_account" />
+
 </navigation>
