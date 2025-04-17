@@ -2,6 +2,7 @@ package com.example.cointrace
 
 import android.Manifest
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -22,6 +23,18 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var dbHelper: DatabaseHelper
+    private lateinit var sharedPreferences: SharedPreferences
+    private val preferenceChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, key ->
+            if (key == "user_id") {
+                val userId = sharedPreferences.getLong("user_id", -1)
+                if (userId == -1L) {
+                    setupRestrictedNavigation()
+                } else {
+                    setupBottomNavigation()
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,16 +47,21 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Vérifier si l'utilisateur est connecté
-        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-        val userId = sharedPreferences.getLong("user_id", -1)
+        sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        sharedPreferences.registerOnSharedPreferenceChangeListener(preferenceChangeListener)
 
+        // Check if the user is connected
+        val userId = sharedPreferences.getLong("user_id", -1)
         if (userId == -1L) {
-            // L'utilisateur n'est pas connecté, rediriger vers l'écran de connexion
             setupRestrictedNavigation()
         } else {
-            // L'utilisateur est connecté, configurer la navigation normale
             setupBottomNavigation()
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sharedPreferences.unregisterOnSharedPreferenceChangeListener(preferenceChangeListener)
     }
 
     /* Configure la navigation restreinte pour les utilisateurs non connectés */
@@ -56,7 +74,6 @@ class MainActivity : AppCompatActivity() {
 
         // Désactiver les autres onglets
         navView.menu.findItem(R.id.navigation_marché).isEnabled = false
-        navView.menu.findItem(R.id.navigation_simulation).isEnabled = false
         navView.menu.findItem(R.id.navigation_note).isEnabled = false
         navView.menu.findItem(R.id.navigation_wallet).isEnabled = false
       
@@ -74,6 +91,10 @@ class MainActivity : AppCompatActivity() {
             )
         )
         navView.setupWithNavController(navController)
+
+        navView.menu.findItem(R.id.navigation_marché).isEnabled = true
+        navView.menu.findItem(R.id.navigation_note).isEnabled = true
+        navView.menu.findItem(R.id.navigation_wallet).isEnabled = true
     }
 
     /* Retrieves and logs all users stored in the database */
