@@ -9,11 +9,10 @@
         android:id="@+id/balanceTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Balance: 0.0€"
+        android:text="Montant du porte-feuille: 0.0€"
         android:textSize="24sp"
         android:layout_gravity="center_horizontal"
         android:padding="16dp"/>
-
     <Button
         android:id="@+id/addButton"
         android:layout_width="wrap_content"

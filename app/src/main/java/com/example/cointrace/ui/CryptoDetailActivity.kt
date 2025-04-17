@@ -4,6 +4,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
+
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -12,11 +13,13 @@ import android.widget.*
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Spinner
+
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
+
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.cointrace.R
@@ -45,7 +48,6 @@ class CryptoDetailActivity : AppCompatActivity() {
     private lateinit var apiService: ApiService
     private lateinit var cryptoId: String
     private lateinit var durationSpinner: Spinner
-
     private var lastFetchedData: List<List<Double>>? = null
     private var lastFetchedCryptoId: String? = null
     private var retryCount = 0
@@ -77,7 +79,6 @@ class CryptoDetailActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets // Retourner les insets modifiés
         }
-
         // Initialiser SharedPreferences pour persister les données
         sharedPreferences = getSharedPreferences("CryptoPrefs", MODE_PRIVATE)
 
@@ -89,7 +90,7 @@ class CryptoDetailActivity : AppCompatActivity() {
         durationSpinner = findViewById(R.id.durationSpinner)
 
         // Récupérer le nom de la crypto passé par l'Intent
-        cryptoName = intent.getStringExtra("CRYPTO_NAME") ?: "Bitcoin"
+        cryptoName = intent.getStringExtra("CRYPTO_NAME") ?: "Nom indisponible"
         Log.d("CryptoDetail", "Nom reçu : $cryptoName")
         cryptoId = intent.getStringExtra("cryptoId") ?: ""
         Log.d("CryptoDetail", "Crypto ID récupéré depuis l'Intent : $cryptoId")
@@ -248,6 +249,7 @@ class CryptoDetailActivity : AppCompatActivity() {
         chart.data = LineData(dataSet)
         chart.invalidate()
     }
+
 
 
 }

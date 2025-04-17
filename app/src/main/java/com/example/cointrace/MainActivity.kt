@@ -47,7 +47,6 @@ class MainActivity : AppCompatActivity() {
         displayAllUsers()
 
         // Retrieve and display simulations
-        displayAllSimulations()
     }
 
     /* Sets up the bottom navigation and navigation controller */
@@ -56,7 +55,7 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_marché, R.id.navigation_simulation, R.id.navigation_compte, R.id.navigation_note, R.id.navigation_wallet
+                R.id.navigation_marché, R.id.navigation_compte, R.id.navigation_note, R.id.navigation_wallet
             )
         )
         navView.setupWithNavController(navController)
@@ -76,18 +75,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     /* Retrieves and logs all simulations stored in the database */
-    private fun displayAllSimulations() {
-        val simulationsCursor = dbHelper.getAllSimulations()
-        if (simulationsCursor.moveToFirst()) {
-            do {
-                val cryptoName = simulationsCursor.getString(simulationsCursor.getColumnIndexOrThrow("crypto_name"))
-                val amount = simulationsCursor.getDouble(simulationsCursor.getColumnIndexOrThrow("amount"))
-                val result = simulationsCursor.getDouble(simulationsCursor.getColumnIndexOrThrow("result"))
-                Log.d("DatabaseInfo", "$cryptoName: Invested $amount€ -> Result: $result€")
-            } while (simulationsCursor.moveToNext())
-        }
-        simulationsCursor.close() // Close the cursor after use
-    }
 
     /* Checks if storage permissions are already granted */
     private fun checkPermission(): Boolean {

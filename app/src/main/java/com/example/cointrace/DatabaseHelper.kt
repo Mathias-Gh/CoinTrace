@@ -3,6 +3,7 @@ package com.example.cointrace
 import android.content.ContentValues
 import android.content.Context
 import android.database.Cursor
+import com.example.cointrace.models.Trade
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
@@ -14,7 +15,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
 
         // Tables and columns
         private const val TABLE_USER = "user_data"
-        private const val TABLE_SIMULATIONS = "simulations"
         private const val TABLE_WALLET = "wallet"
         private const val TABLE_NOTES = "notes"
         private const val TABLE_TRADER = "trader" // New table
@@ -42,10 +42,9 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         // Create tables with a single method
         val createTables = listOf(
             "CREATE TABLE $TABLE_USER ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_EMAIL TEXT, $COLUMN_PASSWORD TEXT, $COLUMN_PSEUDO TEXT)",
-            "CREATE TABLE $TABLE_SIMULATIONS ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_CRYPTO_NAME TEXT, $COLUMN_DATE TEXT, $COLUMN_AMOUNT REAL, $COLUMN_RESULT REAL)",
             "CREATE TABLE $TABLE_WALLET ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_BALANCE REAL NOT NULL, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))",
             "CREATE TABLE $TABLE_NOTES ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_NOTE TEXT, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))",
-            "CREATE TABLE $TABLE_TRADER ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_CRYPTO_NAME TEXT, $COLUMN_AMOUNT REAL, $COLUMN_DATE TEXT, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))"
+            "CREATE TABLE $TABLE_TRADER ($COLUMN_ID INTEGER PRIMARY KEY AUTOINCREMENT, $COLUMN_USER_ID INTEGER, $COLUMN_CRYPTO_NAME TEXT, $COLUMN_AMOUNT REAL, $COLUMN_DATE TEXT, FOREIGN KEY($COLUMN_USER_ID) REFERENCES $TABLE_USER($COLUMN_ID))",
         )
         createTables.forEach { db.execSQL(it) }
     }
@@ -53,7 +52,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
         // Drop existing tables and recreate them when upgrading the database version
         db.execSQL("DROP TABLE IF EXISTS $TABLE_USER")
-        db.execSQL("DROP TABLE IF EXISTS $TABLE_SIMULATIONS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_WALLET")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_NOTES")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_TRADER")
@@ -67,6 +65,23 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_DATE, date)
         })
     }
+    fun getTradesByUser(userId: Long): List<Trade> {
+        val trades = mutableListOf<Trade>()
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT * FROM trader WHERE user_id = ?", arrayOf(userId.toString()))
+
+        if (cursor.moveToFirst()) {
+            do {
+                val cryptoName = cursor.getString(cursor.getColumnIndexOrThrow("crypto_name"))
+                val amount = cursor.getDouble(cursor.getColumnIndexOrThrow("amount"))
+                val date = cursor.getString(cursor.getColumnIndexOrThrow("date"))
+                trades.add(Trade(cryptoName, amount, date))
+            } while (cursor.moveToNext())
+        }
+        cursor.close()
+        return trades
+    }
+
 
     // User methods
     fun insertUser(email: String, password: String, pseudo: String, notes: String): Long {
@@ -137,16 +152,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
     }
 
     // Simulation methods
-    fun insertSimulation(cryptoName: String, date: String, amount: Double, result: Double): Long {
-        return insertData(TABLE_SIMULATIONS, ContentValues().apply {
-            put(COLUMN_CRYPTO_NAME, cryptoName)
-            put(COLUMN_DATE, date)
-            put(COLUMN_AMOUNT, amount)
-            put(COLUMN_RESULT, result)
-        })
-    }
-
-    fun getAllSimulations(): Cursor = getAllData(TABLE_SIMULATIONS)
 
     // Mettre à jour les méthodes liées au portefeuille pour inclure user_id
     fun insertWallet(userId: Long, balance: Double): Long {

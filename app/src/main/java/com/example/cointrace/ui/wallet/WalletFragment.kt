@@ -10,14 +10,18 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.cointrace.DatabaseHelper
 import com.example.cointrace.R
+import com.example.cointrace.adapters.TraderAdapter
 
 class WalletFragment : Fragment() {
 
     private var balance: Double = 0.0
     private lateinit var dbHelper: DatabaseHelper
     private var walletId: Long = -1
+    private lateinit var recyclerView: RecyclerView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,10 +29,24 @@ class WalletFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_wallet, container, false)
 
+        // Initialisation de la RecyclerView
+        recyclerView = view.findViewById(R.id.traderRecyclerView)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
         dbHelper = DatabaseHelper(requireContext())
         val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getLong("user_id", -1)
 
+        // Récupération des transactions
+        val tradeList = dbHelper.getTradesByUser(userId)
+        if (tradeList.isEmpty()) {
+            Toast.makeText(requireContext(), "Aucune transaction trouvée.", Toast.LENGTH_SHORT).show()
+        } else {
+            val adapter = TraderAdapter(tradeList)
+            recyclerView.adapter = adapter
+        }
+
+        // Gestion du solde
         if (userId != -1L) {
             val cursor = dbHelper.getWalletByUser(userId)
             if (cursor.moveToFirst()) {
