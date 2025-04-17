@@ -3,6 +3,7 @@ package com.example.cointrace.ui
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -25,6 +26,11 @@ class FavoritesActivity : AppCompatActivity() {
 
         // Récupérer les noms des cryptos favorites
         val favoriteCryptos = getFavoriteCryptos()
+
+        val backButton = findViewById<Button>(R.id.backButton)
+        backButton.setOnClickListener {
+            finish() // Ferme l'activité et revient en arrière
+        }
 
         // Si aucune crypto favorite n'est trouvée, afficher un message
         if (favoriteCryptos.isEmpty()) {

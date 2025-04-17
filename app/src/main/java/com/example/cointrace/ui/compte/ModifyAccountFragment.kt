@@ -5,9 +5,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.cointrace.DatabaseHelper
+import com.example.cointrace.R
 import com.example.cointrace.databinding.FragmentModifyAccountBinding
 
 class ModifyAccountFragment : Fragment() {
@@ -25,6 +27,10 @@ class ModifyAccountFragment : Fragment() {
     ): View {
         _binding = FragmentModifyAccountBinding.inflate(inflater, container, false)
         databaseHelper = DatabaseHelper(requireContext())
+
+        binding.cancelButton.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+        }
 
         val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         userId = sharedPreferences.getLong("user_id", -1)

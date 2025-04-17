@@ -6,7 +6,6 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_color"
-    android:backgroundTint="#FAF8F8"
     tools:context=".ui.CryptoDetailActivity">
 
     <!-- Nom de la crypto -->
@@ -14,63 +13,63 @@
         android:id="@+id/cryptoNameTextView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="55dp"
+        android:layout_marginTop="40dp"
         android:text="Nom de la crypto"
         android:textColor="@color/title_text_color"
-        android:textSize="20sp"
+        android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Spinner pour sélectionner la durée -->
+    <!-- Spinner pour la durée -->
     <Spinner
         android:id="@+id/durationSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintTop_toBottomOf="@id/cryptoNameTextView"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Graphique de l'évolution des prix -->
+    <!-- Graphique -->
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
         android:layout_width="0dp"
-        android:layout_height="400dp"
+        android:layout_height="0dp"
         android:layout_marginTop="16dp"
+        android:layout_marginBottom="24dp"
         app:layout_constraintTop_toBottomOf="@id/durationSpinner"
+        app:layout_constraintBottom_toTopOf="@id/Button2"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <!-- Bouton Acheter (MaterialButton pour styles modernes) -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/Button2"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="Acheter"
+        android:textColor="@android:color/white"
+        app:cornerRadius="32dp"
+        app:iconPadding="0dp"
+        android:backgroundTint="@color/purple_700"
+        app:layout_constraintBottom_toTopOf="@id/button"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <!-- Bouton Retour -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/button"
-        android:layout_width="103dp"
-        android:layout_height="50dp"
-        android:backgroundTint="#8F8E90"
-        android:text="Retour"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.05"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.01" />
-
-    <!-- Bouton Acheter -->
-    <Button
-        android:id="@+id/Button2"
-        android:layout_width="wrap_content"
+        android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:backgroundTint="#4E2B92"
-        android:text="Acheter"
-        app:cornerRadius="50px"
+        android:layout_marginBottom="24dp"
+        android:text="Retour"
+        android:textColor="@android:color/white"
+        android:backgroundTint="#8F8E90"
+        app:cornerRadius="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.467"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/lineChart"
-        app:layout_constraintVertical_bias="0.973" />
-
-
+        app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -138,46 +138,62 @@
             </LinearLayout>
 
             <!-- Layout de compte -->
-            <LinearLayout
+            <androidx.cardview.widget.CardView
                 android:id="@+id/accountLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
+                android:layout_margin="16dp"
                 android:visibility="gone"
-                android:padding="24dp">
+                android:elevation="4dp"
+                app:cardCornerRadius="16dp"
+                app:cardBackgroundColor="@android:color/white">
 
-                <TextView
-                    android:id="@+id/welcomeMessage"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bienvenue !"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    android:paddingBottom="16dp" />
-
-                <TextView
-                    android:id="@+id/userInfo"
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Nom d'utilisateur :"
-                    android:textSize="18sp"
-                    android:paddingBottom="8dp" />
+                    android:orientation="vertical"
+                    android:padding="24dp">
 
-                <Button
-                    android:id="@+id/modifyAccountButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Modifier mon compte"
-                    android:layout_marginTop="16dp" />
+                    <TextView
+                        android:id="@+id/welcomeMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Bienvenue !"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:paddingBottom="16dp" />
 
-                <Button
-                    android:id="@+id/logoutButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Déconnexion"
-                    android:layout_marginTop="16dp"
-                    android:textColor="@android:color/holo_red_dark" />
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/userInfo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Nom d'utilisateur :"
+                        android:textSize="18sp"
+                        android:textColor="@color/black"
+                        android:paddingBottom="16dp" />
+
+                    <Button
+                        android:id="@+id/modifyAccountButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Modifier mon compte"
+                        android:textColor="@android:color/white"
+                        android:backgroundTint="#4E2B92"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp" />
+
+                    <Button
+                        android:id="@+id/logoutButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Déconnexion"
+                        android:backgroundTint="#DD3B3B"
+                        android:textColor="@android:color/white"
+                        android:layout_marginTop="8dp" />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
