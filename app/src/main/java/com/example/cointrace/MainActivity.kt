@@ -1,6 +1,7 @@
 package com.example.cointrace
 
 import android.Manifest
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
@@ -32,24 +33,38 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        // Check for storage permissions
-        if (!checkPermission()) {
-            requestStoragePermission()
+        // Vérifier si l'utilisateur est connecté
+        val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+        val userId = sharedPreferences.getLong("user_id", -1)
+
+        if (userId == -1L) {
+            // L'utilisateur n'est pas connecté, rediriger vers l'écran de connexion
+            setupRestrictedNavigation()
+        } else {
+            // L'utilisateur est connecté, configurer la navigation normale
+            setupBottomNavigation()
         }
-
-        // Initialize bottom navigation
-        setupBottomNavigation()
-
-        // Initialize the database
-        dbHelper = DatabaseHelper(this)
-
-        // Retrieve and display user data
-        displayAllUsers()
-
-        // Retrieve and display simulations
     }
 
-    /* Sets up the bottom navigation and navigation controller */
+    /* Configure la navigation restreinte pour les utilisateurs non connectés */
+    private fun setupRestrictedNavigation() {
+        val navView: BottomNavigationView = binding.navView
+        val navController = findNavController(R.id.nav_host_fragment_activity_main)
+
+        // Rediriger vers le fragment de compte uniquement
+        navController.navigate(R.id.navigation_compte)
+
+        // Désactiver les autres onglets
+        navView.menu.findItem(R.id.navigation_marché).isEnabled = false
+        navView.menu.findItem(R.id.navigation_simulation).isEnabled = false
+        navView.menu.findItem(R.id.navigation_note).isEnabled = false
+        navView.menu.findItem(R.id.navigation_wallet).isEnabled = false
+      
+        // Retrieve and display simulations
+        navView.setupWithNavController(navController)
+    }
+
+    /* Configure la navigation normale pour les utilisateurs connectés */
     private fun setupBottomNavigation() {
         val navView: BottomNavigationView = binding.navView
         val navController = findNavController(R.id.nav_host_fragment_activity_main)

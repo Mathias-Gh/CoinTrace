@@ -141,23 +141,43 @@
             <LinearLayout
                 android:id="@+id/accountLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="gone">
+                android:visibility="gone"
+                android:padding="24dp">
 
                 <TextView
                     android:id="@+id/welcomeMessage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Bienvenue !" />
+                    android:text="Bienvenue !"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    android:paddingBottom="16dp" />
+
+                <TextView
+                    android:id="@+id/userInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nom d'utilisateur :"
+                    android:textSize="18sp"
+                    android:paddingBottom="8dp" />
+
+                <Button
+                    android:id="@+id/modifyAccountButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Modifier mon compte"
+                    android:layout_marginTop="16dp" />
 
                 <Button
                     android:id="@+id/logoutButton"
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Déconnexion" />
+                    android:text="Déconnexion"
+                    android:layout_marginTop="16dp"
+                    android:textColor="@android:color/holo_red_dark" />
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
