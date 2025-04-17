@@ -1,18 +1,15 @@
 package com.example.cointrace.ui.note
 
-import android.app.AlertDialog
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.example.cointrace.DatabaseHelper
-import com.example.cointrace.R
 import com.example.cointrace.databinding.FragmentNoteBinding
 import com.google.android.material.snackbar.Snackbar
 
