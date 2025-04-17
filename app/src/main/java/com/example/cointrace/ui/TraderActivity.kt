@@ -74,13 +74,16 @@ class TraderActivity : AppCompatActivity() {
                         .show()
                 } else {
                     balance -= amount
-                    dbHelper.updateWallet(userId, userId, balance)
+                    val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
+                    val currentDate = dateFormat.format(java.util.Date())
+
                     dbHelper.insertTrade(
                         userId,
                         crypto,
                         amount,
-                        System.currentTimeMillis().toString()
+                        currentDate
                     )
+
                     Snackbar.make(
                         findViewById(android.R.id.content),
                         "Vous avez acheté $amount € de $crypto",
