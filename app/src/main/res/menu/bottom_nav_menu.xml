@@ -8,11 +8,6 @@
         android:title="@string/title_marché" />
 
     <item
-        android:id="@+id/navigation_simulation"
-        android:icon="@drawable/simulation"
-        android:title="@string/title_simulation" />
-
-    <item
         android:id="@+id/navigation_note"
         android:icon="@drawable/notepad_edit_filled_icon_200459"
         android:title="@string/title_note" />

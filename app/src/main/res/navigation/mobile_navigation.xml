@@ -12,11 +12,10 @@
         tools:layout="@layout/fragment_marche" />
 
     <fragment
-        android:id="@+id/navigation_simulation"
-        android:name="com.example.cointrace.ui.simulation.SimulationFragment"
-        android:label="@string/title_simulation"
-        tools:layout="@layout/fragment_simulation" />
-
+        android:id="@+id/navigation_compte"
+        android:name="com.example.cointrace.ui.compte.CompteFragment"
+        android:label="@string/title_compte"
+        tools:layout="@layout/fragment_compte" />
     <fragment
         android:id="@+id/navigation_note"
         android:name="com.example.cointrace.ui.note.NoteFragment"
