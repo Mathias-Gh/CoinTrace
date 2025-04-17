@@ -1,5 +1,6 @@
 package com.example.cointrace.ui
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
@@ -20,7 +21,13 @@ class TraderActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         setContentView(R.layout.activity_trader)
-
+        val backButton = findViewById<Button>(R.id.button)
+        backButton.setOnClickListener {
+            // Redirige vers CryptoDetailActivity
+            val intent = Intent(this, CryptoDetailActivity::class.java)
+            startActivity(intent)
+            finish() // Facultatif : termine l'activité actuelle
+        }
         dbHelper = DatabaseHelper(this)
         val sharedPreferences = getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         userId = sharedPreferences.getLong("user_id", -1)
