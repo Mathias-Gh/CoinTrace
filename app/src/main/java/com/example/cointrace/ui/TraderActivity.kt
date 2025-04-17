@@ -74,6 +74,7 @@ class TraderActivity : AppCompatActivity() {
                         .show()
                 } else {
                     balance -= amount
+
                     val dateFormat = java.text.SimpleDateFormat("dd/MM/yyyy HH:mm", java.util.Locale.getDefault())
                     val currentDate = dateFormat.format(java.util.Date())
 
