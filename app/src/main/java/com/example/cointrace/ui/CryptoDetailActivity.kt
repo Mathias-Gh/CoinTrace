@@ -4,7 +4,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Bundle
-
 import android.os.Handler
 import android.os.Looper
 import android.util.Log
@@ -13,13 +12,11 @@ import android.widget.*
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Spinner
-
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.activity.enableEdgeToEdge
 import androidx.core.view.ViewCompat
-
 import androidx.core.view.WindowInsetsCompat
 import androidx.lifecycle.lifecycleScope
 import com.example.cointrace.R
@@ -48,17 +45,17 @@ class CryptoDetailActivity : AppCompatActivity() {
     private lateinit var apiService: ApiService
     private lateinit var cryptoId: String
     private lateinit var durationSpinner: Spinner
-    private var lastFetchedData: List<List<Double>>? = null
-    private var lastFetchedCryptoId: String? = null
-    private var retryCount = 0
-    private val maxRetries = 5
-    private val retryDelayMillis = 10_000L // 10 secondes de délai de base
+
+
     private var isRateLimited = false
+    private var cachedData = mutableMapOf<String, List<List<Double>>>() // variables pour gérer plusieurs durées
+
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        // Initialiser l'API (important : avant fetchHistoricalData)
+        apiService = RetrofitInstance.api
         // Définir le layout de l'activité
         setContentView(R.layout.activity_crypto_detail)
 
@@ -79,18 +76,18 @@ class CryptoDetailActivity : AppCompatActivity() {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
             insets // Retourner les insets modifiés
         }
+
         // Initialiser SharedPreferences pour persister les données
         sharedPreferences = getSharedPreferences("CryptoPrefs", MODE_PRIVATE)
 
-        // Initialiser l'API (important : avant fetchHistoricalData)
-        apiService = RetrofitInstance.api
+
 
         // Initialisation du graphique et du spinner
         chart = findViewById(R.id.lineChart)
         durationSpinner = findViewById(R.id.durationSpinner)
 
         // Récupérer le nom de la crypto passé par l'Intent
-        cryptoName = intent.getStringExtra("CRYPTO_NAME") ?: "Nom indisponible"
+        cryptoName = intent.getStringExtra("CRYPTO_NAME") ?: "Bitcoin"
         Log.d("CryptoDetail", "Nom reçu : $cryptoName")
         cryptoId = intent.getStringExtra("cryptoId") ?: ""
         Log.d("CryptoDetail", "Crypto ID récupéré depuis l'Intent : $cryptoId")
@@ -122,13 +119,13 @@ class CryptoDetailActivity : AppCompatActivity() {
 
         setupSpinner()
 
-        // Vérifier si les données ont déjà été récupérées récemment
-        if (cryptoId == lastFetchedCryptoId && lastFetchedData != null) {
-            Log.d("CryptoDetail", "Utilisation des données mises en cache")
-            updateChart(lastFetchedData!!) // Utiliser les données en cache
-        } else {
-            fetchHistoricalData(cryptoId) // Charger les données seulement si nécessaire
-        }
+//        // Vérifier si les données ont déjà été récupérées récemment
+//        if (cryptoId == lastFetchedCryptoId && lastFetchedData != null) {
+//            Log.d("CryptoDetail", "Utilisation des données mises en cache")
+//            updateChart(lastFetchedData!!) // Utiliser les données en cache
+//        } else {
+//            fetchHistoricalData(cryptoId) // Charger les données seulement si nécessaire
+//        }
     }
 
 
@@ -153,33 +150,37 @@ class CryptoDetailActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchHistoricalData(cryptoId: String) {
-        if (isRateLimited) {
-            Log.w("CryptoDetail", "Requête API bloquée car la limite est atteinte.")
-            Toast.makeText(applicationContext, "Limite API atteinte. Attendez un moment.", Toast.LENGTH_SHORT).show()
+    private fun fetchHistoricalData(duration: String) {
+        val cacheKey = "$cryptoId-$duration"
+        var compt = 0
+
+        if (cachedData.containsKey(cacheKey)) {
+            Log.d("CryptoDetail", "Utilisation des données en cache pour $cacheKey")
+            updateChart(cachedData[cacheKey]!!)
             return
         }
 
-        Log.d("CryptoDetail", "Appel API pour $cryptoId avec durée 7 jours")
+        if (isRateLimited) {
+            Log.w("CryptoDetail", "Requête API bloquée (limite atteinte)")
+            Toast.makeText(applicationContext, "Limite API atteinte. Réessayez plus tard.", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        apiService.getHistoricalData(cryptoId, "usd", "7").enqueue(object : Callback<HistoricalDataResponse> {
+        apiService.getHistoricalData(cryptoId, "usd", duration).enqueue(object : Callback<HistoricalDataResponse> {
             override fun onResponse(
                 call: Call<HistoricalDataResponse>,
                 response: Response<HistoricalDataResponse>
             ) {
                 if (response.isSuccessful) {
                     response.body()?.let { historicalData ->
-                        lastFetchedData = historicalData.prices
-                        lastFetchedCryptoId = cryptoId
-                        retryCount = 0
-                        updateChart(historicalData.prices)
-                        Log.d("CryptoDetail", "Données historiques reçues et mises en cache")
-                    } ?: Log.e("CryptoDetail", "Réponse vide de l'API")
+                        historicalData.prices?.let { prices ->
+                            cachedData[cacheKey] = prices
+                            updateChart(prices)
+                        }
+                    }
                 } else {
-                    Log.e("CryptoDetail", "Erreur API - Code : ${response.code()}, Message : ${response.message()}")
-
                     if (response.code() == 429) {
-                        isRateLimited = true  // Bloque les futurs appels
+                        isRateLimited = true
                         handleRateLimitExceeded(cryptoId)
                     } else {
                         Toast.makeText(applicationContext, "Erreur API : ${response.code()}", Toast.LENGTH_SHORT).show()
@@ -188,9 +189,7 @@ class CryptoDetailActivity : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<HistoricalDataResponse>, t: Throwable) {
-                Log.e("CryptoDetail", "Échec de récupération des données : ${t.message}")
-                t.printStackTrace()
-                Toast.makeText(applicationContext, "Échec de connexion à l'API", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Erreur de connexion", Toast.LENGTH_SHORT).show()
             }
         })
     }
@@ -251,6 +250,4 @@ class CryptoDetailActivity : AppCompatActivity() {
     }
 
 
-
 }
-
