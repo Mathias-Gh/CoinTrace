@@ -1,5 +1,6 @@
 package com.example.cointrace.ui
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
@@ -44,7 +45,9 @@ class CryptoDetailActivity : AppCompatActivity() {
     private lateinit var chart: LineChart
     private lateinit var apiService: ApiService
     private lateinit var cryptoId: String
+    private var cryptoPrice: Double = 0.0
     private lateinit var durationSpinner: Spinner
+    private var cryptoMarketCap : Double = 0.0
 
 
     private var isRateLimited = false
@@ -52,6 +55,7 @@ class CryptoDetailActivity : AppCompatActivity() {
 
 
 
+    @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         // Initialiser l'API (important : avant fetchHistoricalData)
@@ -87,10 +91,11 @@ class CryptoDetailActivity : AppCompatActivity() {
         durationSpinner = findViewById(R.id.durationSpinner)
 
         // Récupérer le nom de la crypto passé par l'Intent
-        cryptoName = intent.getStringExtra("CRYPTO_NAME") ?: "Bitcoin"
-        Log.d("CryptoDetail", "Nom reçu : $cryptoName")
+        cryptoName = intent.getStringExtra("cryptoName") ?: "Bitcoin"
+        Log.d("CryptoDetailT", "Nom reçu : $cryptoName")
         cryptoId = intent.getStringExtra("cryptoId") ?: ""
         Log.d("CryptoDetail", "Crypto ID récupéré depuis l'Intent : $cryptoId")
+        cryptoPrice = intent.getDoubleExtra("cryptoPrice", 0.0)
 
         // Vérifie si l'ID est bien récupéré
         if (cryptoId.isEmpty()) {
@@ -103,6 +108,12 @@ class CryptoDetailActivity : AppCompatActivity() {
         // Afficher le nom de la crypto dans le TextView
         val cryptoNameTextView: TextView = findViewById(R.id.cryptoNameTextView)
         cryptoNameTextView.text = cryptoName  // Assure-toi que le TextView est mis à jour
+
+        // Afficher le prix de la crypto dans le TextView
+        val cryptoPriceTextView: TextView = findViewById(R.id.cryptoPriceTextView)
+        cryptoPriceTextView.text = String.format("%.2f €", cryptoPrice)  // Assure-toi que le TextView est mis à jour
+
+
 
         // Vérifier si cette crypto est déjà dans les favoris
         isFavorite = sharedPreferences.getBoolean(cryptoName, false)
@@ -130,7 +141,7 @@ class CryptoDetailActivity : AppCompatActivity() {
 
 
     private fun setupSpinner() {
-        val durations = listOf("1h", "1j", "7j", "30j", "365j", "max")
+        val durations = listOf("1j", "7j", "30j", "365j", "max")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, durations)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         durationSpinner.adapter = adapter
@@ -177,6 +188,16 @@ class CryptoDetailActivity : AppCompatActivity() {
                             cachedData[cacheKey] = prices
                             updateChart(prices)
                         }
+                        //donnes captilisation boursière + affichage (market_cap)
+//                        historicalData.market_caps?.let { marketCaps ->
+//                            // Traiter les données de market_caps si nécessaire
+//                            val mc = marketCaps[0]
+//                            cryptoMarketCap = mc[1]
+//                            // Afficher la capitalisation de la crypto dans le TextView
+//                            val cryptoMarketCapTextView: TextView = findViewById(R.id.cryptoMarketCapTextView)
+//                            cryptoMarketCapTextView.text = String.format("%.2f €", cryptoMarketCap)  // Assure-toi que le TextView est mis à jour
+//                            Log.d("CryptoDetailT", "Market caps: $cryptoMarketCap")
+//                        }
                     }
                 } else {
                     if (response.code() == 429) {

@@ -109,6 +109,8 @@ class MarchéFragment : Fragment() {
                 onItemClick = { crypto ->
                     val intent = Intent(requireContext(), CryptoDetailActivity::class.java)
                     intent.putExtra("cryptoId", crypto.id) // Envoi de l'ID de la crypto
+                    intent.putExtra("cryptoName", crypto.name) // Envoi du nom de la crypto
+                    intent.putExtra("cryptoPrice", crypto.current_price) // Envoi du prix de la crypto
                     startActivity(intent)
                 },
                 onFavoriteClick = { crypto ->
