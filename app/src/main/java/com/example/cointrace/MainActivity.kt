@@ -90,11 +90,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_marché, R.id.navigation_compte, R.id.navigation_note, R.id.navigation_wallet
             )
         )
-        navView.setupWithNavController(navController)
+
 
         navView.menu.findItem(R.id.navigation_marché).isEnabled = true
         navView.menu.findItem(R.id.navigation_note).isEnabled = true
         navView.menu.findItem(R.id.navigation_wallet).isEnabled = true
+        navView.setupWithNavController(navController)
     }
 
     /* Retrieves and logs all users stored in the database */

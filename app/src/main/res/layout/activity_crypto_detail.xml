@@ -22,17 +22,32 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Prix de la crypto -->
+    <TextView
+        android:id="@+id/cryptoPriceTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="Prix de la crypto"
+        android:textColor="@color/title_text_color"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/cryptoNameTextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
     <!-- Spinner pour la durée -->
+
+    <!-- Graphique -->
+
     <Spinner
         android:id="@+id/durationSpinner"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:layout_constraintTop_toBottomOf="@id/cryptoNameTextView"
+        android:layout_marginTop="40dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/cryptoNameTextView" />
 
-    <!-- Graphique -->
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/lineChart"
         android:layout_width="0dp"
@@ -44,32 +59,53 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+    <!-- Capitalisation de la crypto -->
+
     <!-- Bouton Acheter (MaterialButton pour styles modernes) -->
+
+    <!-- Bouton Retour -->
+
+    <!-- Capitalisation de la crypto -->
+<!--    <TextView-->
+<!--        android:id="@+id/cryptoMarketCapTextView"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginTop="484dp"-->
+<!--        android:text="Capitalisation de la crypto"-->
+<!--        android:textColor="@color/title_text_color"-->
+<!--        android:textSize="15sp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintHorizontal_bias="0.497"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@id/cryptoPriceTextView" />-->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/Button2"
         android:layout_width="200dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
+        android:layout_marginBottom="4dp"
+        android:backgroundTint="@color/purple_700"
         android:text="Acheter"
         android:textColor="@android:color/white"
         app:cornerRadius="32dp"
         app:iconPadding="0dp"
-        android:backgroundTint="@color/purple_700"
         app:layout_constraintBottom_toTopOf="@id/button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- Bouton Retour -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/button"
         android:layout_width="160dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
+        android:backgroundTint="#8F8E90"
         android:text="Retour"
         android:textColor="@android:color/white"
-        android:backgroundTint="#8F8E90"
         app:cornerRadius="32dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
