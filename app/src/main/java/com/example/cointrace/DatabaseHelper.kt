@@ -158,8 +158,6 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         }
     }
 
-    // Simulation methods
-
     // Mettre à jour les méthodes liées au portefeuille pour inclure user_id
     fun insertWallet(userId: Long, balance: Double): Long {
         val db = this.writableDatabase
@@ -177,6 +175,15 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
             put(COLUMN_BALANCE, balance)
         }
         return db.update(TABLE_WALLET, contentValues, "$COLUMN_ID = ?", arrayOf(id.toString()))
+    }
+
+    fun updateWalletBalance(userId: Long, newBalance: Double): Boolean {
+        val db = this.writableDatabase
+        val contentValues = ContentValues().apply {
+            put("balance", newBalance)
+        }
+        val rowsAffected = db.update("wallet", contentValues, "user_id = ?", arrayOf(userId.toString()))
+        return rowsAffected > 0
     }
 
     fun getWalletByUser(userId: Long): Cursor {
