@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="@color/background_color"
+    tools:context=".ui.marche.MarchéFragment">
+
+    <!-- RecyclerView -->
+
+    <!-- ProgressBar -->
+
+    <TextView
+        android:id="@+id/titleTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="1dp"
+        android:text="Marché des Cryptomonnaies"
+        android:textAlignment="center"
+        android:textColor="@color/title_text_color"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/cryptoRecyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/viewFavoritesButton" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/cryptoRecyclerView"
+        android:layout_width="378dp"
+        android:layout_height="577dp"
+        android:layout_marginTop="33dp"
+        android:layout_marginBottom="28dp"
+        android:background="@color/recycler_background"
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/titleTextView"
+        tools:listitem="@layout/item_crypto" />
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:indeterminateTint="@color/progress_bar_color"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/emptyStateTextView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <Button
+        android:id="@+id/viewFavoritesButton"
+        android:layout_width="184dp"
+        android:layout_height="40dp"
+        android:backgroundTint="#4E2B92"
+        android:text="Voir mes favoris"
+        app:cornerRadius="50px"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/emptyStateTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Aucune donnée disponible"
+        android:textSize="16sp"
+        android:textColor="@color/empty_state_text_color"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_centerInParent="true"
+        android:visibility="gone"
+        android:layout_alignParentTop="true"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
