@@ -22,6 +22,7 @@ class WalletFragment : Fragment() {
     private lateinit var dbHelper: DatabaseHelper
     private var walletId: Long = -1
     private lateinit var recyclerView: RecyclerView
+    private lateinit var balanceTextView: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,22 +30,12 @@ class WalletFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_wallet, container, false)
 
-        // Initialisation de la RecyclerView
         recyclerView = view.findViewById(R.id.traderRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         dbHelper = DatabaseHelper(requireContext())
         val sharedPreferences = requireContext().getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
         val userId = sharedPreferences.getLong("user_id", -1)
-
-        // Récupération des transactions
-        val tradeList = dbHelper.getTradesByUser(userId)
-        if (tradeList.isEmpty()) {
-            Toast.makeText(requireContext(), "Aucune transaction trouvée.", Toast.LENGTH_SHORT).show()
-        } else {
-            val adapter = TraderAdapter(tradeList)
-            recyclerView.adapter = adapter
-        }
 
         // Gestion du solde
         if (userId != -1L) {
@@ -60,7 +51,7 @@ class WalletFragment : Fragment() {
             Toast.makeText(requireContext(), "Utilisateur non connecté.", Toast.LENGTH_SHORT).show()
         }
 
-        val balanceTextView: TextView = view.findViewById(R.id.balanceTextView)
+        balanceTextView = view.findViewById(R.id.balanceTextView)
         val amountEditText: EditText = view.findViewById(R.id.amountEditText)
         val addButton: Button = view.findViewById(R.id.addButton)
 
@@ -77,6 +68,26 @@ class WalletFragment : Fragment() {
             } else {
                 Toast.makeText(requireContext(), "Veuillez entrer un montant.", Toast.LENGTH_SHORT).show()
             }
+        }
+
+        // Fonction pour gérer la vente d'une crypto
+        fun createSellCallback(userId: Long): (com.example.cointrace.models.Trade) -> Unit = { trade ->
+            dbHelper.deleteTrade(userId, trade)
+            balance += trade.amount
+            dbHelper.updateWallet(walletId, userId, balance)
+            balanceTextView.text = "Balance: $balance€"
+            val newTradeList = dbHelper.getTradesByUser(userId)
+            recyclerView.adapter = TraderAdapter(newTradeList, createSellCallback(userId))
+            Toast.makeText(requireContext(), "Crypto vendue, argent récupéré.", Toast.LENGTH_SHORT).show()
+        }
+
+        // Récupération des transactions
+        val tradeList = dbHelper.getTradesByUser(userId)
+        if (tradeList.isEmpty()) {
+            Toast.makeText(requireContext(), "Aucune transaction trouvée.", Toast.LENGTH_SHORT).show()
+        } else {
+            val adapter = TraderAdapter(tradeList, createSellCallback(userId))
+            recyclerView.adapter = adapter
         }
 
         return view

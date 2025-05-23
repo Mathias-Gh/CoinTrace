@@ -89,6 +89,14 @@ class DatabaseHelper(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME
         return trades
     }
 
+    fun deleteTrade(userId: Long, trade: Trade): Int {
+        val db = writableDatabase
+        return db.delete(
+            "trader",
+            "user_id = ? AND crypto_name = ? AND amount = ? AND date = ?",
+            arrayOf(userId.toString(), trade.cryptoName, trade.amount.toString(), trade.date)
+        )
+    }
 
     // User methods
     fun insertUser(email: String, password: String, pseudo: String, notes: String): Long {
